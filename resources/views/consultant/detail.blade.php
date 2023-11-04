@@ -1168,4 +1168,7 @@
 
 <!-- Page JS -->
 <script src="{{ asset('assets/js/customize/consultant-detail.js') }}"></script>
+<script>
+
+</script>
 @endsection

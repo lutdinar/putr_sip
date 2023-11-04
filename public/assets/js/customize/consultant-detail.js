@@ -1,8 +1,9 @@
 'use strict';
 
+// FORM VALIDATION PLUGIN
 const editUserForm = document.getElementById('editUserForm');
 
-// Form validation for Add new record
+// Form Validation Edit Consultant
 if (editUserForm) {
 	const editUserFormValidation = FormValidation.formValidation(editUserForm, {
 		fields: {
@@ -80,16 +81,53 @@ if (editUserForm) {
 	});
 }
 
-// CleaveJS validation
-// const phoneNumber = document.querySelector('#phoneNumber');
-// Phone Mask
-// if (phoneNumber) {
-// 	new Cleave(phoneNumber, {
-// 		phone: true,
-// 		phoneRegionCode: 'ID'
-// 	});
-// }
+// Add New Deed Company Form Validation
+const addNewDeedForm = document.getElementById('addNewDeedForm');
+const addNewDeedFormValidation = FormValidation.formValidation(addNewDeedForm, {
+    fields: {
+        modalAddNewDeedSubmitted: {
+            validators: {
+                notEmpty: {
+                    message: 'Mohon pilih tanggal akta perusahaan'
+                },
+                date: {
+                    format: 'YYYY-MM-DD',
+                    message: 'Tanggal yang anda masukan tidak sesuai format yang telah ditentukan'
+                }
+            }
+        }
+    },
+    plugins: {
+        trigger: new FormValidation.plugins.Trigger(),
+        bootstrap5: new FormValidation.plugins.Bootstrap5({
+            // Use this for enabling/changing valid/invalid class
+            // eleInvalidClass: '',
+            eleValidClass: '',
+            rowSelector: '.col-12'
+        }),
+        submitButton: new FormValidation.plugins.SubmitButton(),
+        // Submit the form when all fields are valid
+        // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+        autoFocus: new FormValidation.plugins.AutoFocus()
+    },
+    init: instance => {
+        instance.on('plugins.message.placed', function(e) {
+            //* Move the error message out of the `input-group` element
+            if (e.element.parentElement.classList.contains('input-group')) {
+                // `e.field`: The field name
+                // `e.messageElement`: The message element
+                // `e.element`: The field element
+                e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+            }
+            //* Move the error message out of the `row` element for custom-options
+            if (e.element.parentElement.parentElement.classList.contains('custom-option')) {
+                e.element.closest('.row').insertAdjacentElement('afterend', e.messageElement);
+            }
+        });
+    }
+});
 
+// MANAGE IMAGE UPLOAD PREVIEW
 // Update/reset user image of account page
 let accountUserImage = document.getElementById('uploadedAvatar'),
 	fileInput = document.querySelector('.account-file-input'),
@@ -124,3 +162,325 @@ if (personilPhoto) {
 		personilPhoto.src  		= resetPhotoImg;
 	};
 }
+
+// DATE PICKER PLUGIN
+// initCustomOptionCheck on modal show to update the custom select
+let addNewDeed = document.getElementById('addNewDeed');
+addNewDeed.addEventListener('show.bs.modal', function(event) {
+    // Init custom option check
+    window.Helpers.initCustomOptionCheck();
+});
+
+let modalAddNewDeedSubmitted = $('#modalAddNewDeedSubmitted');
+if (modalAddNewDeedSubmitted.length) {
+    modalAddNewDeedSubmitted.datepicker({
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+}
+
+let modalAddSbuExpireDate		= $('#modalAddSbuExpireDate');
+if (modalAddSbuExpireDate.length) {
+    modalAddSbuExpireDate.datepicker({
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+}
+
+let modalAddIujkExpireDate		= $('#modalAddIujkExpireDate');
+if (modalAddIujkExpireDate.length) {
+    modalAddIujkExpireDate.datepicker({
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+}
+
+let modalAddSiupExpireDate		= $('#modalAddSiupExpireDate');
+if (modalAddSiupExpireDate.length) {
+    modalAddSiupExpireDate.datepicker({
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+}
+
+let modalAddNibCreateDate		= $('#modalAddNibCreateDate');
+if (modalAddNibCreateDate.length) {
+    modalAddNibCreateDate.datepicker({
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+}
+
+let addNewPersonilDob		= $('#addNewPersonilDob');
+if (addNewPersonilDob.length) {
+    addNewPersonilDob.datepicker({
+        todayHighlight: true,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        orientation: isRtl ? 'auto right' : 'auto left'
+    });
+}
+
+let select2		= $('.select2');
+if (select2.length) {
+    select2.each(function () {
+        var $this = $(this);
+        $this.wrap('<div class="position-relative"></div>').select2({
+            placeholder: 'Select value',
+            dropdownParent: $this.parent()
+        });
+    });
+}
+
+
+// DROPZONE PLUGIN
+    const previewTemplate = `<div class="dz-preview dz-file-preview">
+		<div class="dz-details">
+	  		<div class="dz-thumbnail">
+				<img data-dz-thumbnail>
+				<span class="dz-nopreview">No preview</span>
+				<div class="dz-success-mark"></div>
+				<div class="dz-error-mark"></div>
+				<div class="dz-error-message">
+					<span data-dz-errormessage></span>
+				</div>
+				<div class="progress">
+		  			<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-dz-uploadprogress></div>
+				</div>
+  			</div>
+	  		<div class="dz-filename" data-dz-name></div>
+	  		<div class="dz-size" data-dz-size></div>
+		</div>
+	</div>`;
+
+Dropzone.autoDiscover = false;
+
+// Dropzone DEED OF COMPANY
+const myDropzone = new Dropzone("div#dropzone-deed-of-company", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 30,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload',
+    init: function() {
+        var dropzoneBasic = this;
+
+        // First change the button to actually tell Dropzone to process the queue.
+        // var addNewDeedForm = document.getElementById('addNewDeedForm');
+        // addNewDeedForm.addEventListener('submit', function(e) {
+        // Make sure that the form isn't actually being sent.
+        // e.preventDefault();
+        // e.stopPropagation();
+
+        // let modalAddNewDeedFileData		= document.getElementById('modalAddNewDeedFileData');
+        // if (modalAddNewDeedFileData.value == "") {
+        //     $("#alert-dz-deed-file").show();
+        // } else {
+        //     $("#alert-dz-deed-file").hide();
+        //     dropzoneBasic.processQueue();
+        // }
+        // });
+
+        $("#btn-save-deed").click(function (e) {
+            e.preventDefault();
+            dropzoneBasic.processQueue();
+
+            let modalAddNewDeedFileData		= document.getElementById('modalAddNewDeedFileData');
+            if (modalAddNewDeedFileData.value == "") {
+                // 	console.log("modalAddNewDeedFileData isEmpty");
+                $("#alert-dz-deed-file").show();
+            } else {
+                document.getElementById("addNewDeedForm").submit();
+            }
+
+        });
+
+        this.on('sending', function(file, xhr, formData) {
+            console.log(file);
+            console.log(formData);
+        });
+
+        this.on("success", function(files, response) {
+            // Gets triggered when the files have successfully been sent.
+            // Redirect user or notify of success.
+            console.log(response);
+            $("#modalAddNewDeedFileData").val(files.dataURL);
+            // document.getElementById("addNewDeedForm").submit();
+        });
+
+        this.on("error", function(files, response) {
+            // Gets triggered when there was an error sending the files.
+            // Maybe show form again, and notify user of error
+            Swal.fire({
+                title: 'Kesalahan Proses Unggah',
+                text: response,
+                icon: 'error',
+                customClass: {
+                    confirmButton: 'btn btn-success'
+                }
+            }).then(function() {
+                window.location.reload();
+            });
+        });
+
+        this.on("removedfile", function(file) {
+            $("#modalAddNewDeedFileData").val(null);
+        });
+    }
+});
+
+const dropzonePhoto = new Dropzone("div#dropzone-photo", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 10,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload',
+    init: function() {
+        var dzPhoto = this;
+
+        addNewOwnerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if ($("#addNewOwnerPhotoData").val() == "") {
+                Swal.fire({
+                    title: "Kesalahan",
+                    text: "Pas Photo harus dipilih dahulu!",
+                    icon: "error",
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });
+            } else {
+                dzPhoto.processQueue();
+            }
+        });
+
+        this.on("success", function(files, response) {
+            // Gets triggered when the files have successfully been sent.
+            // Redirect user or notify of success.
+            console.log(response);
+            $("#addNewOwnerPhotoData").val(files.dataURL);
+            // document.getElementById("addNewDeedForm").submit();
+        });
+
+        this.on("error", function(files, response) {
+            // Gets triggered when there was an error sending the files.
+            // Maybe show form again, and notify user of error
+            Swal.fire({
+                title: 'Kesalahan Proses Unggah',
+                text: response,
+                icon: 'error',
+                customClass: {
+                    confirmButton: 'btn btn-success'
+                }
+            }).then(function() {
+                window.location.reload();
+            });
+        });
+
+        this.on("removedfile", function(file) {
+            $("#addNewOwnerPhotoData").val(null);
+        })
+    }
+});
+
+// DROPZONE ID CARD OWNER COMPANY
+const dropzoneIdCard = new Dropzone("div#dropzone-id-card", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 10,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
+
+// DROPZONE SBU
+const dropzoneSbuDocument	= new Dropzone("div#modal-add-sbu-document", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 30,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
+
+// DROPZONE IUJK
+const dropzoneIujkDocument	= new Dropzone("div#modal-add-iujk-document", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 30,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
+
+// DROPZONE SIUP
+const dropzoneSiupDocument	= new Dropzone("div#modal-add-siup-document", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 30,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
+
+// DROPZONE NIB
+const dropzoneNibDocument	= new Dropzone("div#modal-add-nib-document", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 30,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
+
+// DROPZONE IJAZAH
+const dropzonePersonilEducationDocument	= new Dropzone("div#modal-personil-education", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 30,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
+
+// DROPZONE KTP
+const dropzonePersonilIdCardDocument	= new Dropzone("div#modal-personil-id-card", {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    maxFilesize: 10,
+    addRemoveLinks: true,
+    maxFiles: 1,
+    autoProcessQueue: false,
+    acceptedFiles: '.png,.jpg,.pdf',
+    url: '/upload'
+});
