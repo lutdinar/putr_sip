@@ -1,0 +1,47 @@
+<!-- Add NIB -->
+<div class="modal fade" id="addNIB" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-simple modal-lg">
+        <div class="modal-content p-3 p-md-5">
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-4">
+                    <h3 class="mb-2">Tambah Nomor Induk Berusaha</h3>
+                    <p class="text-muted">Tambahkan Nomor Induk Berusaha yang aktif</p>
+                </div>
+                <form id="addNIBForm" class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="modalAddNibCreateDate">Tanggal Pembuatan NIB</label>
+                        <input type="text" id="modalAddNibCreateDate" name="modalAddNibCreateDate" class="form-control" placeholder="YYYY-MM-DD" />
+                    </div>
+
+                    <div class="col-12">
+                        <label for="modal-add-nib-document" class="form-label">Unggah Dokumen Surat Izin Usaha Perdagangan</label>
+                        <div class="card shadow-none mb-4">
+                            <div class="dropzone needsclick" id="modal-add-nib-document">
+                                <div class="dz-message needsclick">
+                                    Drop files here or click to upload
+                                    <span class="note needsclick">
+                                        (This is just a demo dropzone. Selected files are
+                                        <span class="fw-medium">not</span> actually uploaded.)
+                                    </span>
+                                </div>
+                                <div class="fallback">
+                                    <input name="modalAddNibDocument" id="modalAddNibDocument" type="file" />
+                                </div>
+                            </div>
+                            <span class="mt-1 text-danger form-label" id="alert-dz-nib-file">Test</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Simpan</button>
+                        <button type="reset" class="btn btn-label-danger" data-bs-dismiss="modal" aria-label="Close">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add NIB -->
