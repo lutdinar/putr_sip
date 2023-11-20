@@ -9,11 +9,10 @@
                     <p class="text-muted address-subtitle">Tambah baru akta perusahaan untuk melengkapi persyaratan
                         administrasi.</p>
                 </div>
-                <form id="addNewDeedForm" class="row g-3" method="post"
-                      action="{{ url('consultants/save_deed') }}">
-                    <div class="col-12">
-                        <input type="text" name="modalAddNewDeedFileData" id="modalAddNewDeedFileData"
-                               class="form-control" placeholder="modalAddNewDeedFileData" required>
+                <form id="addNewDeedForm" class="row g-3" method="post" action="{{ url('consultants/save_deed') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="col-12" hidden>
+                        <input type="text" class="form-control" name="modalAddNewDeedRefer" id="modalAddNewDeedRefer" value="{{ $consultant->refer }}" required>
                     </div>
 
                     <label for="modalAddNewDeedType" class="form-label">Pilih Jenis Akta Perusahaan</label>
@@ -25,8 +24,8 @@
                                     <span class="custom-option-title">Pendirian</span>
                                     <small> Pilih Pendirian jika Akta Perusahaan untuk Legalitas Pendirian.</small>
                                 </span>
-                                <input name="modalAddNewDeedType" class="form-check-input" type="radio" value="1"
-                                       id="customRadioIcon1" checked />
+                                <input name="modalAddNewDeedType" class="form-check-input" type="radio" value="pendirian"
+                                       id="modalAddNewDeedType1" checked />
                             </label>
                         </div>
                     </div>
@@ -38,35 +37,36 @@
                                     <span class="custom-option-title"> Perubahan </span>
                                     <small> Pilih Perubahan jika terjadi perubahan pada Akta Perusahaan. </small>
                                 </span>
-                                <input name="modalAddNewDeedType" class="form-check-input" type="radio" value="2"
-                                       id="customRadioIcon2" />
+                                <input name="modalAddNewDeedType" class="form-check-input" type="radio" value="perubahan"
+                                       id="modalAddNewDeedType2" />
                             </label>
                         </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-6 mb-2">
                         <label class="form-label" for="modalAddressFirstName">Tanggal Akta Perusahaan</label>
                         <input type="text" name="modalAddNewDeedSubmitted" id="modalAddNewDeedSubmitted"
-                               placeholder="YYYY-MM-DD" class="form-control" />
+                               placeholder="YYYY-MM-DD" class="form-control" autocomplete="off" />
                     </div>
 
-                    <div class="col-12">
-                        <label for="dropzone-deed-of-company" class="form-label">Unggah Dokumen Akta Perusahaan</label>
-                        <div class="card shadow-none mb-4">
-                            <div class="dropzone needsclick" id="dropzone-deed-of-company">
-                                <div class="dz-message needsclick">
-                                    Drop files here or click to upload
-                                    <span class="note needsclick">
-                                        (This is just a demo dropzone. Selected files are
-                                        <span class="fw-medium">not</span> actually uploaded.)
-                                    </span>
-                                </div>
-                                <div class="fallback">
-                                    <input name="modalAddNewDeedFile" id="modalAddNewDeedFile" type="file" />
-                                </div>
-                            </div>
-                            <span class="mt-1 text-danger form-label" id="alert-dz-deed-file">Mohon pilih Dokumen Akta Perusahaan dahulu!</span>
-                        </div>
+                    <div class="col-6 mb-2">
+                        <label for="modalAddNewDeedDocument" class="form-label">Unggah dokumen Akta Perusahaan</label>
+                        <input class="form-control" type="file" id="modalAddNewDeedDocument" name="file" accept="image/jpeg, image/png, application/pdf" />
+<!--                        <div class="card shadow-none mb-4">-->
+<!--                            <div class="dropzone needsclick" id="dropzone-deed-of-company">-->
+<!--                                <div class="dz-message needsclick">-->
+<!--                                    Drop files here or click to upload-->
+<!--                                    <span class="note needsclick">-->
+<!--                                        (This is just a demo dropzone. Selected files are-->
+<!--                                        <span class="fw-medium">not</span> actually uploaded.)-->
+<!--                                    </span>-->
+<!--                                </div>-->
+<!--                                <div class="fallback">-->
+<!--                                    <input name="modalAddNewDeedFile" id="modalAddNewDeedFile" type="file" />-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <span class="mt-1 text-danger form-label" id="alert-dz-deed-file">Mohon pilih Dokumen Akta Perusahaan dahulu!</span>-->
+<!--                        </div>-->
                     </div>
 
                     <div class="col-12 text-center">

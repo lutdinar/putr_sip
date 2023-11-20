@@ -58,6 +58,10 @@
         <link rel="stylesheet" href="{{ asset('assets/vendor/libs/formvalidation/dist/css/formValidation.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/vendor/libs/plyr/plyr.css'); }}" />
         <link rel="stylesheet" href="{{ asset('assets/vendor/libs/dropzone/dropzone.css'); }}" />
+        <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/typography.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/katex.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/vendor/libs/quill/editor.css') }}" />
 
         <!-- Page CSS -->
         <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/cards-advance.css') }}" />
@@ -70,7 +74,7 @@
 
         <!-- Helpers -->
         <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
-
+        <script src="{{ asset('assets/vendor/js/template-customizer.js') }}"></script>
         <script src="{{ asset('assets/js/config.js') }}"></script>
 
         <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
@@ -140,12 +144,29 @@
                                 <!-- /Search -->
 
                                 <!-- Style Switcher -->
-                                <li class="nav-item me-2 me-xl-0">
-                                    <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+                                <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-0">
+                                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                         <i class="ti ti-md"></i>
                                     </a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
+                                                <span class="align-middle"><i class="ti ti-sun me-2"></i>Light</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
+                                                <span class="align-middle"><i class="ti ti-moon me-2"></i>Dark</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
+                                                <span class="align-middle"><i class="ti ti-device-desktop me-2"></i>System</span>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
-                                <!--/ Style Switcher -->
+                                <!-- / Style Switcher-->
 
                                 <!-- Quick links  -->
                                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">

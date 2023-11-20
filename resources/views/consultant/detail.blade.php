@@ -9,6 +9,16 @@
     <a href="{{ url('consultants') }}" class="btn btn-label-primary">Kembali</a>
 </div>
 
+@if (session('status'))
+<div class="alert <?= (session('status') == 'success') ? 'alert-success' : 'alert-danger' ?> alert-dismissible d-flex align-items-center" role="alert">
+        <span class="alert-icon <?= (session('status') == 'success') ? 'text-success' : 'text-danger' ?> me-2">
+            <i class="ti <?= (session('status') == 'success') ? 'ti-check' : 'ti-ban' ?> ti-xs"></i>
+        </span>
+    {{ session('message') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <div class="row">
     <!-- User Sidebar -->
     <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
@@ -20,7 +30,7 @@
                         <img class="img-fluid rounded mb-3 pt-1 mt-4" src="{{ asset('assets/img/avatars/15.png') }}"
                              height="100" width="100" alt="User avatar" />
                         <div class="user-info text-center">
-                            <h4 class="mb-2">Testing</h4>
+                            <h4 class="mb-2">{{ $consultant->name }}</h4>
                             <span class="badge bg-label-success mt-1">Terverifikasi</span>
                         </div>
                     </div>
@@ -64,11 +74,11 @@
                         <li class="d-flex align-items-center mb-3">
                             <i class="ti ti-phone-call"></i><span class="fw-medium mx-2 text-heading">No.
                                 Telepon:</span>
-                            <span>081233334444</span>
+                            <span>{{ $consultant->phone }}</span>
                         </li>
                         <li class="d-flex align-items-center mb-3">
                             <i class="ti ti-mail"></i><span class="fw-medium mx-2 text-heading">Email:</span>
-                            <span>testing@gmail.com</span>
+                            <span>{{ $consultant->email }}</span>
                         </li>
                     </ul>
                     <small class="card-text text-uppercase">Alamat</small>
@@ -76,7 +86,7 @@
                         <li class="d-flex align-items-center mb-3">
                             <i class="ti ti-map-pin me-2"></i>
                             <div class="d-flex flex-wrap">
-                                <span class="fw-medium me-2 text-heading">Jl. Kartini no. 13, Regol Wetan, Kec. Sumedang Selatan</span>
+                                <span class="fw-medium me-2 text-heading">{{ $consultant->address }}</span>
                             </div>
                         </li>
                     </ul>
@@ -1142,12 +1152,12 @@
 <!-- Modal -->
 @include('_partials/modals/edit_consultant')
 @include('_partials/modals/deed_of_company')
-@include('_partials/modals/owner')
-@include('_partials/modals/sbu')
-@include('_partials/modals/iujk')
-@include('_partials/modals/siup')
-@include('_partials/modals/nib')
-@include('_partials/modals/personil')
+<!--@include('_partials/modals/owner')-->
+<!--@include('_partials/modals/sbu')-->
+<!--@include('_partials/modals/iujk')-->
+<!--@include('_partials/modals/siup')-->
+<!--@include('_partials/modals/nib')-->
+<!--@include('_partials/modals/personil')-->
 
 <!-- End Modal -->
 

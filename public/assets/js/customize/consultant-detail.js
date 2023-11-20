@@ -95,6 +95,13 @@ const addNewDeedFormValidation = FormValidation.formValidation(addNewDeedForm, {
                     message: 'Tanggal yang anda masukan tidak sesuai format yang telah ditentukan'
                 }
             }
+        },
+        modalAddNewDeedDocument: {
+            validators: {
+                notEmpty: {
+                    message: 'Mohon pilih dokumen terlebih dahulu'
+                }
+            }
         }
     },
     plugins: {
@@ -103,11 +110,11 @@ const addNewDeedFormValidation = FormValidation.formValidation(addNewDeedForm, {
             // Use this for enabling/changing valid/invalid class
             // eleInvalidClass: '',
             eleValidClass: '',
-            rowSelector: '.col-12'
+            rowSelector: '.col-6'
         }),
         submitButton: new FormValidation.plugins.SubmitButton(),
         // Submit the form when all fields are valid
-        // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+        defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
         autoFocus: new FormValidation.plugins.AutoFocus()
     },
     init: instance => {
@@ -266,81 +273,62 @@ if (select2.length) {
 Dropzone.autoDiscover = false;
 
 // Dropzone DEED OF COMPANY
-const myDropzone = new Dropzone("div#dropzone-deed-of-company", {
-    previewTemplate: previewTemplate,
-    parallelUploads: 1,
-    maxFilesize: 30,
-    addRemoveLinks: true,
-    maxFiles: 1,
-    autoProcessQueue: false,
-    acceptedFiles: '.png,.jpg,.pdf',
-    url: '/upload',
-    init: function() {
-        var dropzoneBasic = this;
-
-        // First change the button to actually tell Dropzone to process the queue.
-        // var addNewDeedForm = document.getElementById('addNewDeedForm');
-        // addNewDeedForm.addEventListener('submit', function(e) {
-        // Make sure that the form isn't actually being sent.
-        // e.preventDefault();
-        // e.stopPropagation();
-
-        // let modalAddNewDeedFileData		= document.getElementById('modalAddNewDeedFileData');
-        // if (modalAddNewDeedFileData.value == "") {
-        //     $("#alert-dz-deed-file").show();
-        // } else {
-        //     $("#alert-dz-deed-file").hide();
-        //     dropzoneBasic.processQueue();
-        // }
-        // });
-
-        $("#btn-save-deed").click(function (e) {
-            e.preventDefault();
-            dropzoneBasic.processQueue();
-
-            let modalAddNewDeedFileData		= document.getElementById('modalAddNewDeedFileData');
-            if (modalAddNewDeedFileData.value == "") {
-                // 	console.log("modalAddNewDeedFileData isEmpty");
-                $("#alert-dz-deed-file").show();
-            } else {
-                document.getElementById("addNewDeedForm").submit();
-            }
-
-        });
-
-        this.on('sending', function(file, xhr, formData) {
-            console.log(file);
-            console.log(formData);
-        });
-
-        this.on("success", function(files, response) {
-            // Gets triggered when the files have successfully been sent.
-            // Redirect user or notify of success.
-            console.log(response);
-            $("#modalAddNewDeedFileData").val(files.dataURL);
-            // document.getElementById("addNewDeedForm").submit();
-        });
-
-        this.on("error", function(files, response) {
-            // Gets triggered when there was an error sending the files.
-            // Maybe show form again, and notify user of error
-            Swal.fire({
-                title: 'Kesalahan Proses Unggah',
-                text: response,
-                icon: 'error',
-                customClass: {
-                    confirmButton: 'btn btn-success'
-                }
-            }).then(function() {
-                window.location.reload();
-            });
-        });
-
-        this.on("removedfile", function(file) {
-            $("#modalAddNewDeedFileData").val(null);
-        });
-    }
-});
+var _token          = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+// const myDropzone = new Dropzone("div#dropzone-deed-of-company", {
+//     previewTemplate: previewTemplate,
+//     parallelUploads: 1,
+//     maxFilesize: 30,
+//     addRemoveLinks: true,
+//     maxFiles: 1,
+//     autoProcessQueue: false,
+//     acceptedFiles: '.png,.jpg,.pdf',
+//     url: '{{ url("/consultants/upload") }}',
+//     init: function() {
+//         var dropzoneBasic = this;
+//
+//         $("#btn-save-deed").click(function (e) {
+//             // Make sure that the form isn't actually being sent.
+//             e.preventDefault();
+//             // e.stopPropagation();
+//             dropzoneBasic.processQueue();
+//         });
+//
+//         this.on('sending', function (file, xhr, formData) {
+//             formData.append("_token", _token);
+//         });
+//
+//         this.on("success", function(files, response) {
+//             // Gets triggered when the files have successfully been sent.
+//             // Redirect user or notify of success.
+//             console.log(files);
+//             console.log(response);
+//             if(response.success == 0){ // Error
+//                 alert(response.error);
+//             }
+//             // $("#modalAddNewDeedFileData").val(files.dataURL);
+//             // document.getElementById("addNewDeedForm").submit();
+//         });
+//
+//         this.on("error", function(files, response) {
+//             Gets triggered when there was an error sending the files.
+//             Maybe show form again, and notify user of error
+//             Swal.fire({
+//                 title: 'Kesalahan Proses Unggah',
+//                 text: response,
+//                 icon: 'error',
+//                 customClass: {
+//                     confirmButton: 'btn btn-success'
+//                 }
+//             }).then(function() {
+//                 window.location.reload();
+//             });
+//         });
+//
+//         this.on("removedfile", function(file) {
+//             $("#modalAddNewDeedFileData").val(null);
+//         });
+//     }
+// });
 
 const dropzonePhoto = new Dropzone("div#dropzone-photo", {
     previewTemplate: previewTemplate,

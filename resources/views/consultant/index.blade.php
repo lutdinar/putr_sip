@@ -100,7 +100,7 @@
                     </p>
                     <div class="d-flex align-items-center justify-content-between app-academy-md-80">
                         <input name="search" type="search" placeholder="Cari penyedia jasa" class="form-control me-2"
-                               value=""
+                               value="{{ $params }}"
                                autocomplete="off" required />
                         <button type="submit" class="btn btn-primary btn-icon"><i class="ti ti-search"></i></button>
                         <button type="reset" class="mx-2 btn btn-warning btn-icon"
@@ -114,6 +114,16 @@
             </div>
         </div>
     </form>
+
+    @if (session('status'))
+    <div class="alert <?= (session('status') == 'success') ? 'alert-success' : 'alert-danger' ?> alert-dismissible d-flex align-items-center" role="alert">
+        <span class="alert-icon <?= (session('status') == 'success') ? 'text-success' : 'text-danger' ?> me-2">
+            <i class="ti <?= (session('status') == 'success') ? 'ti-check' : 'ti-ban' ?> ti-xs"></i>
+        </span>
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
     <div class="card mb-4">
         <div class="card-header d-flex flex-wrap justify-content-between gap-3">
@@ -130,12 +140,15 @@
         </div>
         <div class="card-body">
             <div class="row gy-4 mb-4">
-                <div class="col-sm-6 col-lg-4">
+                @if (!empty($consultants))
+                    @foreach ($consultants as $consultant)
+                    <div class="col-xl-4 col-md-6 col-sm-12">
                     <div class="card p-2 h-100 shadow-none border">
                         <div class="rounded-2 text-center mb-3">
-                            <a href=""><img
+                            <a href="{{ url('consultants/detail?refer=') . $consultant->refer }}">
+                                <img
                                     class="img-fluid" src="{{ asset('assets/img/pages/app-academy-tutor-5.png') }}"
-                                    alt="tutor image 5" /></a>
+                                    alt="{{ $consultant->name }}" /></a>
                         </div>
                         <div class="card-body p-3 pt-2">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -162,9 +175,9 @@
                                 <!--								</h6>-->
                             </div>
                             <a class="h5"
-                               href="">Testing</a>
+                               href="{{ url('consultants/detail?refer=') . $consultant->refer }}">{{ $consultant->name }}</a>
                             <p class="mt-2">
-                                testing@gmail.com
+                                {{ $consultant->email }}
                             </p>
                             <p class="d-flex align-items-center text-success">
                                 <i class="ti ti-checks me-2 mt-n1"></i>Completed
@@ -174,16 +187,28 @@
                                      aria-valuemax="100"></div>
                             </div>
                             <a class="w-100 btn btn-label-primary align-items-center"
-                               href="">
+                               href="{{ url('consultants/detail?refer=') . $consultant->refer }}">
                                 <span class="me-2">Detail</span>
                                 <i class="ti ti-chevron-right scaleX-n1-rtl ti-sm"></i>
                             </a>
                         </div>
                     </div>
                 </div>
+                    @endforeach
+                @else
+                <div class="col-xl-12">
+                    <div class="alert alert-danger">
+                        <span>Data tidak ditemukan...</span>
+                    </div>
+                </div>
+                @endif
             </div>
+
+            @include('_partials.paginations.consultant', ['paginator' => $consultants])
         </div>
     </div>
+
+
 
     <div class="row gy-4 mb-4">
         <div class="col-lg-6">
@@ -231,56 +256,6 @@
             </div>
         </div>
     </div>
-
-    <div class="card">
-        <div class="card-body row gy-4">
-            <div class="col-sm-12 col-lg-4 text-center pt-md-5 px-3">
-                <span class="badge bg-label-primary p-2 mb-3"><i class="ti ti-gift ti-lg"></i></span>
-                <h3 class="card-title mb-4">Today's Free Courses</h3>
-                <p class="card-text mb-4">
-                    We offers 284 Free Online courses from top tutors and companies to help you start or advance
-                    your career skills. Learn online for free and fast today!
-                </p>
-                <button class="btn btn-primary">Get premium courses</button>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border shadow-none">
-                    <div class="p-2 pb-0">
-                        <video poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg"
-                               id="guitar-video-player" playsinline controls>
-                            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
-                                    type="video/mp4" />
-                        </video>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Your First Singing Lesson</h5>
-                        <p class="card-text">
-                            In the same way as any other artistic domain, singing lends itself perfectly to
-                            self-teaching.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 border shadow-none">
-                    <div class="p-2 pb-0">
-                        <video poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg"
-                               id="guitar-video-player-2" playsinline controls>
-                            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
-                                    type="video/mp4" />
-                        </video>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Guitar for Beginners</h5>
-                        <p class="card-text">
-                            The Fender Acoustic Guitar is the best choice for both beginners and professionals offering
-                            a great sound.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="modal fade" id="addNewConsultant" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
@@ -294,12 +269,12 @@
                         kedalam sistem.</p>
                 </div>
 
-                <form id="addNewConsultantForm" action="{{ url('consultants/save') }}" class="row g-3"
-                      method="post">
+                <form id="addNewConsultantForm" action="{{ url('consultants/save') }}" class="row g-3" method="post">
+                    @csrf
                     <div class="col-12">
                         <label class="form-label" for="addNewConsultantName">Nama Perusahaan</label>
                         <input type="text" id="addNewConsultantName" name="addNewConsultantName" class="form-control"
-                               placeholder="John" autocomplete="off" autofocus />
+                               placeholder="Nama Perusahaan" autocomplete="off" autofocus />
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="addNewConsultantEmail">Email Perusahaan</label>
@@ -364,7 +339,7 @@
                     },
                     regexp: {
                         regexp: /^[a-zA-Z .,]+$/,
-                        message: 'Nama lengkap hanya dapat diisi oleh alfabet, angka, titik dan koma'
+                        message: 'Nama lengkap hanya dapat diisi oleh alfabet, titik dan koma'
                     }
                 }
             },
@@ -400,7 +375,7 @@
                         message: 'Mohon masukan alamat kantor perusahaan'
                     },
                     stringLength: {
-                        min: 15,
+                        min: 6,
                         message: 'Alamat Perusahaan harus lebih besar dari 6 karakter'
                     },
                 }

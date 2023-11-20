@@ -22,46 +22,12 @@
                                         </ul>
                                     </li>
 
-                                    <!-- Data Dasar -->
-                                    <li
-                                        class="menu-item">
-                                        <a href="javascript:void(0)" class="menu-link menu-toggle">
-                                            <i class="menu-icon tf-icons ti ti-barrier-block"></i>
-                                            <div data-i18n="Data Dasar (DD)">Data Dasar (DD)</div>
+                                    <li class="menu-item">
+                                        <a href="{{ url('tasks')}}" class="menu-link">
+                                            <i class="menu-icon tf-icons ti ti-list-check"></i>
+                                            <div data-i18n="Kegiatan">Kegiatan</div>
                                         </a>
-
-                                        <ul class="menu-sub">
-                                            <li class="menu-item ">
-                                                <a href="" class="menu-link">
-                                                    <i class="menu-icon tf-icons ti ti-road"></i>
-                                                    <div data-i18n="Ruas Jalan Kabupaten">Ruas Jalan Kabupaten</div>
-                                                </a>
-                                            </li>
-                                            <li class="menu-item ">
-                                                <a href="" class="menu-link">
-                                                    <i class="menu-icon tf-icons ti ti-building-bridge-2"></i>
-                                                    <div data-i18n="Jembatan Kabupaten">Jembatan Kabupaten</div>
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </li>
-
-                                    <!-- Kegiatan -->
-                                    <!--<li class="menu-item --><?php //= ($this->uri->segment(1) == "task") ? "active" : ""; ?><!--">-->
-                                    <!--    <a href="javascript:void(0)" class="menu-link menu-toggle">-->
-                                    <!--        <i class="menu-icon tf-icons ti ti-list-check"></i>-->
-                                    <!--        <div data-i18n="Kegiatan">Kegiatan</div>-->
-                                    <!--    </a>-->
-                                    <!---->
-                                    <!--    <ul class="menu-sub">-->
-                                    <!--        <li class="menu-item --><?php //= ($this->uri->segment(1) == "task") ? "active" : ""; ?><!--">-->
-                                    <!--            <a href="--><?php //= base_url('task') ?><!--" class="menu-link">-->
-                                    <!--                <i class="menu-icon tf-icons ti ti-menu-2"></i>-->
-                                    <!--                <div data-i18n="Daftar Kegiatan">Daftar Kegiatan</div>-->
-                                    <!--            </a>-->
-                                    <!--        </li>-->
-                                    <!--    </ul>-->
-                                    <!--</li>-->
 
                                     <!-- Penyedia Jasa -->
                                     <li class="menu-item ">
@@ -80,14 +46,14 @@
                                         <ul class="menu-sub">
                                             <li
                                                 class="menu-item ">
-                                                <a href="" class="menu-link">
+                                                <a href="{{ url('users') }}" class="menu-link">
                                                     <i class="menu-icon tf-icons ti ti-users"></i>
                                                     <div data-i18n="Daftar Pengguna">Daftar Pengguna</div>
                                                 </a>
                                             </li>
                                             <li
                                                 class="menu-item ">
-                                                <a href="" class="menu-link">
+                                                <a href="{{ url('users/forgot') }}" class="menu-link">
                                                     <i class="menu-icon tf-icons ti ti-lock"></i>
                                                     <div data-i18n="Daftar Lupa Password">Daftar Lupa Password</div>
                                                 </a>

@@ -48,7 +48,7 @@ let config = {
 
 let assetsPath = document.documentElement.getAttribute('data-assets-path'),
   templateName = document.documentElement.getAttribute('data-template'),
-  rtlSupport = true; // set true for rtl support (rtl + ltr), false for ltr only.
+  rtlSupport = false; // set true for rtl support (rtl + ltr), false for ltr only.
 
 /**
  * TemplateCustomizer
@@ -91,7 +91,7 @@ if (typeof TemplateCustomizer !== 'undefined') {
   window.templateCustomizer = new TemplateCustomizer({
     cssPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
     themesPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
-    displayCustomizer: true,
+    displayCustomizer: false,
     // lang: 'fr',
     // defaultTheme: 2,
     // defaultStyle: 'system',
