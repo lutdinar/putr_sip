@@ -130,31 +130,32 @@
                 <p class="mb-4">Mohon sign-in menggunakan akun Anda</p>
 
                 <!-- Alert -->
-<!--                --><?php //if (!empty($message)) { ?>
-<!--                    <div class="alert alert---><?php //= ($status == 'success') ? 'success' : 'danger'; ?><!-- d-flex align-items-center" role="alert">-->
-<!--				  <span class="alert-icon text---><?php //= ($status == 'success') ? 'success' : 'danger' ?><!-- me-2">-->
-<!--					  <i class="ti ti---><?php //= ($status == 'success') ? 'check' : 'ban'; ?><!-- ti-xs"></i>-->
-<!--				  </span>-->
-<!--                        --><?php //= $message; ?>
-<!--                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
-<!--                    </div>-->
-<!--                --><?php //} ?>
+                @if (session('status'))
+                    <div class="alert <?= (session('status') == 'success') ? 'alert-success' : 'alert-danger' ?> alert-dismissible d-flex align-items-center" role="alert">
+                        <span class="alert-icon <?= (session('status') == 'success') ? 'text-success' : 'text-danger' ?> me-2">
+                            <i class="ti <?= (session('status') == 'success') ? 'ti-check' : 'ti-ban' ?> ti-xs"></i>
+                        </span>
+                        {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <!-- End Alert -->
 
                 <!-- Form Authentication -->
                 <form id="formAuthentication" class="mb-3" action="{{ url('authentications/signin') }}" method="POST">
-                    <div class="mb-3">
+                    @csrf
+                    <div class="mb-3 col-12">
                         <label for="email" class="form-label">Username</label>
                         <input
                             type="text"
                             class="form-control"
-                            id="email"
+                            id="userName"
                             name="userName"
-                            placeholder="Masukan username anda"
+                            placeholder="Masukan Username atau Email anda"
                             autofocus
                         />
                     </div>
-                    <div class="mb-3 form-password-toggle">
+                    <div class="mb-3 col-12 form-password-toggle">
                         <div class="d-flex justify-content-between">
                             <label class="form-label" for="password">Password</label>
                             <a href="{{ url('authentications/forgot') }}">
@@ -164,7 +165,7 @@
                         <div class="input-group input-group-merge">
                             <input
                                 type="password"
-                                id="password"
+                                id="passWord"
                                 class="form-control"
                                 name="passWord"
                                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
@@ -197,12 +198,6 @@
 <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
 <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-
-<script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/i18n/i18n.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
 
 <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
 <!-- endbuild -->
@@ -216,6 +211,60 @@
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
 <!-- Page JS -->
-<script src="{{ asset('assets/js/pages-auth.js') }}"></script>
+{{--<script src="{{ asset('assets/js/pages-auth.js') }}"></script>--}}
+<script>
+    const formAuthentication    = document.getElementById('formAuthentication');
+    const formAuthenticationValidation  = FormValidation.formValidation(formAuthentication, {
+        fields: {
+            userName: {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan Username Anda'
+                    },
+                }
+            },
+            passWord: {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan Password Anda'
+                    }
+                }
+            }
+        },
+        plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+                // Use this for enabling/changing valid/invalid class
+                // eleInvalidClass: '',
+                eleValidClass: '',
+                rowSelector: function(field, ele) {
+                    // field is the field name & ele is the field element
+                    return '.col-12';
+                }
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            // Submit the form when all fields are valid
+            defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+            autoFocus: new FormValidation.plugins.AutoFocus(),
+        },
+        init: instance => {
+            instance.on('plugins.message.placed', function(e) {
+                //* Move the error message out of the `input-group` element
+                if (e.element.parentElement.classList.contains('input-group')) {
+                    // `e.field`: The field name
+                    // `e.messageElement`: The message element
+                    // `e.element`: The field element
+                    e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+                }
+                //* Move the error message out of the `row` element for custom-options
+                if (e.element.parentElement.parentElement.classList.contains(
+                    'custom-option')) {
+                    e.element.closest('.row').insertAdjacentElement('afterend',
+                        e.messageElement);
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

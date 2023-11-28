@@ -29,4 +29,14 @@ class ConsultantOwner extends Model
     protected $isDirector                       = 'is_director';
     protected $consultants                      = 'consultants';
     protected $deletedAt                        = 'deleted_at';
+
+    public function insert_entry()
+    {
+        return ConsultantOwner::save();
+    }
+
+    public function truncate_entry()
+    {
+        return ConsultantOwner::truncate();
+    }
 }

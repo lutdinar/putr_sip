@@ -9,7 +9,7 @@
                     <div class="content-left">
                         <span>Jumlah</span>
                         <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2"><?= (!empty($users)) ? $users : 0; ?></h4>
+                            <h4 class="mb-0 me-2"><?= (isset($users)) ? $users : "-"; ?></h4>
                         </div>
                         <span>Pengguna</span>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="content-left">
                         <span>Pengguna Aktif</span>
                         <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2"><?= (!empty($users_registered)) ? $users_registered : 0 ?></h4>
+                            <h4 class="mb-0 me-2"><?= (isset($active)) ? $active : "-" ?></h4>
                         </div>
                         <span>Pengguna</span>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="content-left">
                         <span>Pengguna Tidak Aktif</span>
                         <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2"><?= (!empty($users_not_registered)) ? $users_not_registered : 0; ?></h4>
+                            <h4 class="mb-0 me-2"><?= (isset($non_active)) ? $non_active : "-"; ?></h4>
                         </div>
                         <span>Pengguna</span>
                     </div>
@@ -59,6 +59,29 @@
 </div>
 
 <!-- ALERT -->
+@if (session('status'))
+    <div class="alert <?= (session('status') == 'success') ? 'alert-success' : 'alert-danger' ?> alert-dismissible d-flex align-items-center" role="alert">
+        <span class="alert-icon <?= (session('status') == 'success') ? 'text-success' : 'text-danger' ?> me-2">
+            <i class="ti <?= (session('status') == 'success') ? 'ti-check' : 'ti-ban' ?> ti-xs"></i>
+        </span>
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+        <ul class="list-unstyled">
+            @foreach ($errors->all() as $error)
+                <li class="mb-2">
+                    <span class="fw-medium me-1">{{ $error }}</span>
+                </li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+<!-- END ALERT -->
 
 <!-- List of Users -->
 <div class="card">
@@ -75,7 +98,6 @@
             <tr>
                 <th></th>
                 <th>Pengguna</th>
-                <th>Kontak</th>
                 <th>Username</th>
                 <th>Hak Akses</th>
                 <th>Status Akun</th>
@@ -92,6 +114,7 @@
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
             <form action="{{ url('users/save') }}" class="row g-3" id="addNewUserForm" method="post">
+                @csrf
                 <div class="col-12">
                     <h6 class="fw-semibold">1. Detail Pengguna</h6>
                     <hr class="mt-0" />
@@ -105,11 +128,6 @@
                     <label class="form-label" for="formEmail">Email</label>
                     <input class="form-control" type="email" id="formEmail" name="formEmail"
                            placeholder="john.doe@xxxxx.com" autocomplete="off" />
-                </div>
-                <div class="col-12">
-                    <label class="form-label" for="formContact">Kontak</label>
-                    <input type="text" id="formContact" class="form-control phone-mask" placeholder="08xxxxxxxxx"
-                           name="formContact" autocomplete="off" />
                 </div>
 
                 <div class="col-12 pt-3">
@@ -162,6 +180,8 @@
                     <label class="form-label" for="formRole">Hak Akses</label>
                     <select name="formRole" class="form-select select2" data-allow-clear="false">
                         <option value="">Pilih Hak Akses</option>
+                        <option value="administrator">Administrator</option>
+                        <option value="ppk">PPK</option>
                     </select>
                 </div>
 
@@ -183,9 +203,6 @@
 <script src="{{ asset('assets/vendor/libs/formvalidation/dist/js/plugins/PasswordStrength.min.js') }}"></script>
 
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
-
-<script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
-<script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
 
 <!-- Main JS -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
@@ -212,7 +229,6 @@
     if (dt_user_table.length) {
         var dt_user = dt_user_table.DataTable({
             processing: true,
-            //ajax: '<?php //= base_url('users/get_users_json') ?>//', // JSON file to add data
             ajax: {
                 url: "{{ url('users/get_users') }}",
                 dataType: 'json',
@@ -225,10 +241,7 @@
                     data: ''
                 },
                 {
-                    data: 'user'
-                },
-                {
-                    data: 'user'
+                    data: 'data'
                 },
                 {
                     data: 'username'
@@ -240,7 +253,7 @@
                     data: 'state'
                 },
                 {
-                    data: 'action'
+                    data: 'id'
                 }
             ],
             columnDefs: [
@@ -260,8 +273,8 @@
                     targets: 1,
                     responsivePriority: 4,
                     render: function(data, type, full, meta) {
-                        var $name = full['user']['name'],
-                            $email = full['user']['email'];
+                        var $name = full['name'],
+                            $email = full['email'];
 
                         // For Avatar badge
                         var stateNum = Math.floor(Math.random() * 5);
@@ -269,8 +282,7 @@
                         var $state = states[stateNum],
                             $initials = $name.match(/\b\w/g) || [];
                         $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-                        $output = '<span class="avatar-initial rounded-circle bg-label-' + $state +
-                            '">' + $initials + '</span>';
+                        $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
 
                         // Creates full output for row
                         var $row_output =
@@ -295,22 +307,8 @@
                     }
                 },
                 {
-                    // User Phone
-                    targets: 2,
-                    render: function(data, type, full, meta) {
-                        var $phone = full['user']['phone'];
-                        if ($phone != null) {
-                            return '<span class="fw-semibold">' + $phone + '</span>';
-                        } else {
-                            return '<span class="fw-semibold">-</span>';
-                        }
-
-                    }
-
-                },
-                {
                     // Username
-                    targets: 3,
+                    targets: 2,
                     render: function(data, type, full, meta) {
                         var $account = full['username'];
 
@@ -319,14 +317,17 @@
                 },
                 {
                     // User Role
-                    targets: 4,
+                    targets: 3,
                     render: function(data, type, full, meta) {
-                        var $account = full['role']['name'];
+                        var $account = full['role'];
+                        if ($account === "consultant") {
+                            $account    = "Penyedia Jasa";
+                        }
                         var roleBadgeObj = {
-                            Operator: '<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="ti ti-user ti-sm"></i></span>',
-                            Admin: '<span class="badge badge-center rounded-pill bg-label-success w-px-30 h-px-30 me-2"><i class="ti ti-circle-check ti-sm"></i></span>',
-                            Konsultan: '<span class="badge badge-center rounded-pill bg-label-primary w-px-30 h-px-30 me-2"><i class="ti ti-chart-pie-2 ti-sm"></i></span>',
-                            PPK: '<span class="badge badge-center rounded-pill bg-label-info w-px-30 h-px-30 me-2"><i class="ti ti-edit ti-sm"></i></span>',
+                            // Operator: '<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="ti ti-user ti-sm"></i></span>',
+                            administrator: '<span class="badge badge-center rounded-pill bg-label-success w-px-30 h-px-30 me-2"><i class="ti ti-circle-check ti-sm"></i></span>',
+                            "Penyedia Jasa": '<span class="badge badge-center rounded-pill bg-label-primary w-px-30 h-px-30 me-2"><i class="ti ti-chart-pie-2 ti-sm"></i></span>',
+                            ppk: '<span class="badge badge-center rounded-pill bg-label-info w-px-30 h-px-30 me-2"><i class="ti ti-edit ti-sm"></i></span>',
                         };
 
                         return "<span class='text-truncate d-flex align-items-center'>" + roleBadgeObj[$account] + $account.toUpperCase() + "</span>";
@@ -334,7 +335,7 @@
                 },
                 {
                     // User Status
-                    targets: 5,
+                    targets: 4,
                     render: function(data, type, full, meta) {
                         var $account = full['state'];
                         var $bg_label;
@@ -343,7 +344,7 @@
                             case "active":
                                 $bg_label = 'bg-label-success';
                                 break;
-                            case "inactive":
+                            case "non-active":
                                 $bg_label = 'bg-label-danger';
                                 break;
                         }
@@ -559,7 +560,7 @@
                     display: $.fn.dataTable.Responsive.display.modal({
                         header: function(row) {
                             var data = row.data();
-                            return 'Details of ' + data['user']['name'];
+                            return 'Details of ' + data['name'];
                         }
                     }),
                     type: 'column',
@@ -591,7 +592,7 @@
             initComplete: function() {
                 // Adding role filter once table initialized
                 this.api()
-                    .columns(4)
+                    .columns(3)
                     .every(function() {
                         var column = this;
                         var select = $(
@@ -609,13 +610,16 @@
                             .sort()
                             .each(function(d, j) {
                                 if (d != null) {
-                                    select.append('<option value="' + d.name + '" >' + d.name + '</option>');
+                                    if (d === "consultant") {
+                                        d = "Penyedia Jasa";
+                                    }
+                                    select.append('<option value="' + d + '" >' + d + '</option>');
                                 }
                             });
                     });
                 // Adding status filter once table initialized
                 this.api()
-                    .columns(5)
+                    .columns(4)
                     .every(function() {
                         var column = this;
                         var select = $(
@@ -633,6 +637,7 @@
                             .sort()
                             .each(function(d, j) {
                                 if (d != null) {
+                                    console.log(d);
                                     select.append(
                                         '<option value="' + d + '">' + d + '</option>'
                                     );
@@ -668,8 +673,8 @@
                         message: 'Nama lengkap harus lebih kecil dari 200 dan lebih besar dari 6 karakter'
                     },
                     regexp: {
-                        regexp: /^[a-zA-Z ]+$/,
-                        message: 'Nama lengkap hanya dapat diisi oleh alfabet dan angka'
+                        regexp: /^[a-zA-Z .,]+$/,
+                        message: 'Nama lengkap hanya dapat diisi oleh alfabet, titik, koma dan angka'
                     }
                 }
             },
@@ -683,34 +688,15 @@
                     }
                 }
             },
-            formContact: {
-                validators: {
-                    notEmpty: {
-                        message: 'Mohon masukan nomor kontak pengguna'
-                    },
-                    stringLength: {
-                        min: 6,
-                        max: 15,
-                        message: 'Nomor kontak harus lebih kecil dari 15 dan lebih besar dari 6 karakter'
-                    },
-                    regexp: {
-                        regexp: /^[0-9]+$/,
-                        message: 'Mohon masukan angka',
-                    },
-                }
-            },
             formUsername: {
                 validators: {
                     notEmpty: {
-                        message: 'Mohon masukan nomor kontak pengguna'
+                        message: 'Mohon masukan username pengguna'
                     },
                     stringLength: {
                         min: 6,
-                        max: 20
-                    },
-                    regexp: {
-                        regexp: /^[a-zA-Z0-9]+$/,
-                        message: 'Username hanya dapat diisi oleh alfabet dan angka'
+                        max: 30,
+                        message: 'Username harus lebih besar dari 6 dan lebih kecil dari 30 karakter'
                     }
                 }
             },
@@ -822,5 +808,15 @@
             });
         }
     });
+
+    function stateConfirm(e) {
+        let user    = e.id;
+
+    }
+
+    function deleteConfirm(e) {
+        let user    = e.id;
+        console.log(user);
+    }
 </script>
 @endsection

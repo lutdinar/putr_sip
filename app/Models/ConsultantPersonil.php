@@ -12,7 +12,7 @@ class ConsultantPersonil extends Model
     protected $table                            = 'consultants_personil';
     protected $primaryKey                       = 'id';
     protected $name                             = 'name';
-    protected $photo                             = 'photo';
+    protected $photo                            = 'photo';
     protected $dateOfBirth                             = 'date_of_birth';
     protected $idCard                             = 'id_card';
     protected $idCardVerificationAccount                             = 'id_card_verification_account';
@@ -28,4 +28,9 @@ class ConsultantPersonil extends Model
     protected $educationVerificationMessage                             = 'education_verification_message';
     protected $consultants                             = 'consultants';
     protected $deletedAt                        = 'deleted_at';
+
+    public function insert_entry()
+    {
+        return ConsultantPersonil::save();
+    }
 }

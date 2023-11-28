@@ -94,99 +94,250 @@
                         <h5 class="m-0">Informasi Kegiatan</h5>
                     </div>
 
-                    <form class="">
-                        <h6>1. Penyedia Jasa</h6>
-                        <div class="row">
-                            <label class="col-sm-3 col-form-label">Konsultan Perencana</label>
-                            <div class="col-sm-9">
-                                <select id="" class="select2 form-select" data-allow-clear="true">
-                                    <option value="">Cari Penyedia Jasa</option>
-                                </select>
+                    <div class="nav-align-top">
+                        <ul class="nav nav-tabs nav-fill" role="tablist">
+                            <li class="nav-item">
+                                <button
+                                    type="button"
+                                    class="nav-link active"
+                                    role="tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#task-planning"
+                                    aria-controls="task-planning"
+                                    aria-selected="true">
+                                    Konsultan Perencanaan
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button
+                                    type="button"
+                                    class="nav-link"
+                                    role="tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#task-supervisor"
+                                    aria-controls="task-supervisor"
+                                    aria-selected="false">
+                                    Konsultan Pengawas
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button
+                                    type="button"
+                                    class="nav-link"
+                                    role="tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#task-contractor"
+                                    aria-controls="task-contractor"
+                                    aria-selected="false">
+                                    Kontraktor Pelaksana
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content px-0 pb-0">
+                            <div class="tab-pane fade show active" id="task-planning" role="tabpanel">
+                                <form action="">
+                                    <h6>1. Penyedia Jasa</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Konsultan Perencana</label>
+                                        <div class="col-sm-9">
+                                            <select id="" class="select2 form-select" data-allow-clear="true">
+                                                <option value="">Cari Penyedia Jasa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
+                                        <div class="col-sm-9">
+                                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 mx-n4" />
+                                    <h6>2. Data Umum Pekerjaan</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">No Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Nomor Kontrak" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="multicol-country">Nilai Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Nilai Kontrak">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-3 col-form-label">Sumber Dana</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Sumber Dana">
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 mx-n4" />
+                                    <h6>3. Waktu Pelaksanaan</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Masa Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                placeholder="Masukan Masa Kontrak" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="multicol-birthdate">Surat Perintah Mulai Kerja</label>
+                                        <div class="col-sm-9">
+                                            <input
+                                                type="text"
+                                                id="multicol-birthdate"
+                                                class="form-control dob-picker"
+                                                placeholder="YYYY-MM-DD" />
+                                        </div>
+                                    </div>
+                                    <div class="row pt-1">
+                                        <div class="col-sm-12">
+                                            <div class="float-end">
+                                                <button type="submit" class="btn btn-success me-sm-2 me-1">Simpan</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tab-pane fade" id="task-supervisor" role="tabpanel">
+                                <form action="">
+                                    <h6>1. Penyedia Jasa</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Konsultan Pengawas</label>
+                                        <div class="col-sm-9">
+                                            <select id="" class="select2 form-select" data-allow-clear="true">
+                                                <option value="">Cari Penyedia Jasa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
+                                        <div class="col-sm-9">
+                                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 mx-n4" />
+                                    <h6>2. Data Umum Pekerjaan</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">No Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Nomor Kontrak" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="multicol-country">Nilai Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Nilai Kontrak">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-3 col-form-label">Sumber Dana</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Sumber Dana">
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 mx-n4" />
+                                    <h6>3. Waktu Pelaksanaan</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Masa Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                placeholder="Masukan Masa Kontrak" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="multicol-birthdate">Surat Perintah Mulai Kerja</label>
+                                        <div class="col-sm-9">
+                                            <input
+                                                type="text"
+                                                id="multicol-birthdate"
+                                                class="form-control dob-picker"
+                                                placeholder="YYYY-MM-DD" />
+                                        </div>
+                                    </div>
+                                    <div class="row pt-1">
+                                        <div class="col-sm-12">
+                                            <div class="float-end">
+                                                <button type="submit" class="btn btn-success me-sm-2 me-1">Simpan</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="task-contractor" role="tabpanel">
+                                <form action="">
+                                    <h6>1. Penyedia Jasa</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Kontraktor Pelaksana</label>
+                                        <div class="col-sm-9">
+                                            <select id="" class="select2 form-select" data-allow-clear="true">
+                                                <option value="">Cari Penyedia Jasa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-5">
+                                        <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
+                                        <div class="col-sm-9">
+                                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 mx-n4" />
+                                    <h6>2. Data Umum Pekerjaan</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">No Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Nomor Kontrak" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="multicol-country">Nilai Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Nilai Kontrak">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-3 col-form-label">Sumber Dana</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Masukan Sumber Dana">
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 mx-n4" />
+                                    <h6>3. Waktu Pelaksanaan</h6>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label">Masa Kontrak</label>
+                                        <div class="col-sm-9">
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                placeholder="Masukan Masa Kontrak" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="multicol-birthdate">Surat Perintah Mulai Kerja</label>
+                                        <div class="col-sm-9">
+                                            <input
+                                                type="text"
+                                                id="multicol-birthdate"
+                                                class="form-control dob-picker"
+                                                placeholder="YYYY-MM-DD" />
+                                        </div>
+                                    </div>
+                                    <div class="row pt-1">
+                                        <div class="col-sm-12">
+                                            <div class="float-end">
+                                                <button type="submit" class="btn btn-success me-sm-2 me-1">Simpan</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="row mb-5">
-                            <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
-                            <div class="col-sm-9">
-                                <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-3 col-form-label">Konsultan Pengawas</label>
-                            <div class="col-sm-9">
-                                <select id="" class="select2 form-select" data-allow-clear="true">
-                                    <option value="">Cari Penyedia Jasa</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-5">
-                            <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
-                            <div class="col-sm-9">
-                                <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-3 col-form-label">Kontraktor Pelaksana</label>
-                            <div class="col-sm-9">
-                                <select id="" class="select2 form-select" data-allow-clear="true">
-                                    <option value="">Cari Penyedia Jasa</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-5">
-                            <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
-                            <div class="col-sm-9">
-                                <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
-                            </div>
-                        </div>
-                        <hr class="my-4 mx-n4" />
-                        <h6>2. Data Umum Pekerjaan</h6>
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">No Kontrak</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="Masukan Nomor Kontrak" />
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label" for="multicol-country">Nilai Kontrak</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="Masukan Nilai Kontrak">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="col-sm-3 col-form-label">Sumber Dana</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" placeholder="Masukan Sumber Dana">
-                            </div>
-                        </div>
-                        <hr class="my-4 mx-n4" />
-                        <h6>3. Waktu Pelaksanaan</h6>
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Masa Kontrak</label>
-                            <div class="col-sm-9">
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Masukan Masa Kontrak" />
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label" for="multicol-birthdate">Surat Perintah Mulai Kerja</label>
-                            <div class="col-sm-9">
-                                <input
-                                    type="text"
-                                    id="multicol-birthdate"
-                                    class="form-control dob-picker"
-                                    placeholder="YYYY-MM-DD" />
-                            </div>
-                        </div>
-                        <div class="row pt-1">
-                            <div class="col-sm-12">
-                                <div class="float-end">
-                                    <button type="submit" class="btn btn-success me-sm-2 me-1">Simpan</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

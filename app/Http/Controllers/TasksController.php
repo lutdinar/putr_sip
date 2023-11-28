@@ -8,6 +8,12 @@ class TasksController extends Controller
 {
     //
 
+    public function testing(Request $request)
+    {
+        $sessions   = $request->session()->all();
+        echo json_encode($sessions);
+    }
+
     public function get_roads(Request $request)
     {
         return response()->json([

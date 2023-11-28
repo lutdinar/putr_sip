@@ -8,7 +8,11 @@
                     <h3 class="mb-2">Tambah Nomor Induk Berusaha</h3>
                     <p class="text-muted">Tambahkan Nomor Induk Berusaha yang aktif</p>
                 </div>
-                <form id="addNIBForm" class="row g-3">
+                <form id="addNIBForm" class="row g-3" method="post" action="{{ url('consultants/company/nib') }}" enctype="multipart/form-data">
+                    <div class="col-12" hidden>
+                        @csrf
+                        <input type="text" class="form-control" name="modalAddNibRefer" value="{{ $consultant->refer }}" required>
+                    </div>
                     <div class="col-12">
                         <label class="form-label" for="modalAddNibCreateDate">Tanggal Pembuatan NIB</label>
                         <input type="text" id="modalAddNibCreateDate" name="modalAddNibCreateDate" class="form-control" placeholder="YYYY-MM-DD" />

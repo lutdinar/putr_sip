@@ -2,7 +2,7 @@
 @section('title', 'Daftar Penyedia Jasa')
 @section('content')
 <div class="row g-4 mb-4">
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-4">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between">
@@ -20,25 +20,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-start justify-content-between">
-                    <div class="content-left">
-                        <span>Terverifikasi</span>
-                        <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2">4,567</h4>
-                        </div>
-                        <span>Penyedia Jasa</span>
-                    </div>
-                    <span class="badge bg-label-success rounded p-2">
-                        <i class="ti ti-user-check ti-sm"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-4">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between">
@@ -56,7 +38,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-4">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between">
@@ -140,9 +122,8 @@
         </div>
         <div class="card-body">
             <div class="row gy-4 mb-4">
-                @if (!empty($consultants))
-                    @foreach ($consultants as $consultant)
-                    <div class="col-xl-4 col-md-6 col-sm-12">
+                @forelse ($consultants as $consultant)
+                <div class="col-xl-4 col-md-6 col-sm-12">
                     <div class="card p-2 h-100 shadow-none border">
                         <div class="rounded-2 text-center mb-3">
                             <a href="{{ url('consultants/detail?refer=') . $consultant->refer }}">
@@ -194,14 +175,13 @@
                         </div>
                     </div>
                 </div>
-                    @endforeach
-                @else
+                @empty
                 <div class="col-xl-12">
                     <div class="alert alert-danger">
                         <span>Data tidak ditemukan...</span>
                     </div>
                 </div>
-                @endif
+                @endforelse
             </div>
 
             @include('_partials.paginations.consultant', ['paginator' => $consultants])

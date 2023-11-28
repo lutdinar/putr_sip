@@ -37,4 +37,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $name;
+    protected $email;
+    protected $username;
+    protected $password;
+    protected $type;
+    protected $state;
+    protected $role;
+    protected $deleted_at;
+
+    public function insert_entry()
+    {
+        return User::save();
+    }
 }

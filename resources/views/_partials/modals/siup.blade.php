@@ -8,9 +8,10 @@
                     <h3 class="mb-2">Tambah Surat Izin Usaha Perdagangan</h3>
                     <p class="text-muted">Tambahkan Surat Izin Usaha Perdagangan yang aktif</p>
                 </div>
-                <form id="addSIUPForm" class="row g-3" onsubmit="return false">
-                    <div class="col-12">
-                        <input type="text" class="form-control" name="modalAddSiupDocumentData" id="modalAddSiupDocumentData" required>
+                <form id="addSIUPForm" class="row g-3" method="post" action="{{ url('consultants/company/siup') }}" enctype="multipart/form-data">
+                    <div class="col-12" hidden>
+                        @csrf
+                        <input type="text" class="form-control" name="modalAddSiupRefer" value="{{ $consultant->refer }}" required>
                     </div>
 
                     <div class="col-12">

@@ -12,13 +12,13 @@ class Consultant extends Model
 
     protected $table = 'consultants';
     protected $primaryKey   = 'id';
-    protected $refer        = 'refer';
-    protected $name         = 'name';
-    protected $email        = 'email';
-    protected $phone        = 'phone';
-    protected $address      = 'address';
-    protected $logo         = 'logo';
-    protected $account      = 'account';
+    protected $refer           = 'refer';
+    protected $name            = 'name';
+    protected $email           = 'email';
+    protected $phone           = 'phone';
+    protected $address         = 'address';
+    protected $logo            = 'logo';
+    protected $account         = 'account';
     protected $deletedAt    = 'deleted_at';
 
     public function insert_entry()

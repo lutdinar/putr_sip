@@ -19,6 +19,19 @@
 </div>
 @endif
 
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+        <ul class="list-unstyled">
+            @foreach ($errors->all() as $error)
+            <li class="mb-2">
+                <span class="fw-medium me-1">{{ $error }}</span>
+            </li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="row">
     <!-- User Sidebar -->
     <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
@@ -57,16 +70,26 @@
                     <ul class="list-unstyled mb-4 mt-3">
                         <li class="d-flex align-items-center mb-3">
                             <i class="ti ti-user text-heading"></i>
-                            <span class="fw-medium mx-2 text-heading">Direktur:</span> <span>John Doe</span>
+                            <span class="fw-medium mx-2 text-heading">Direktur:</span> <span>{{ (!empty($consultant->director)) ? $consultant->director->name : "-" }}</span>
                         </li>
                         <li class="d-flex align-items-center mb-3">
                             <i class="ti ti-users text-heading"></i>
-                            <span class="fw-medium mx-2 text-heading">Personil:</span> <span>6 Orang</span>
+                            <span class="fw-medium mx-2 text-heading">Personil:</span> <span>{{ (!empty($consultant->personil)) ? count($consultant->personil) : "0" }} Orang</span>
                         </li>
                         <li class="d-flex align-items-center mb-3">
                             <i class="ti ti-lock-check text-heading"></i>
-                            <span class="fw-medium mx-2 text-heading">Akun:</span> <span
-                                class="badge bg-label-danger">Tidak Aktif</span>
+                            <span class="fw-medium mx-2 text-heading">Akun:</span>
+                            @switch(!empty($consultant->account) && isset($consultant->account->state))
+                                @case("active")
+                                    <span class="badge bg-label-success">Aktif</span>
+                                    @break
+                                @case("non-active")
+                                    <span class="badge bg-label-warning">Tidak Aktif</span>
+                                    @break
+                                @default
+                                    <span class="badge bg-label-info">Belum terdaftar</span>
+                            @endswitch
+
                         </li>
                     </ul>
                     <small class="card-text text-uppercase">Kontak Perusahaan</small>
@@ -95,8 +118,14 @@
                         <a href="javascript:void(0);" class="btn btn-sm btn-primary me-3" data-bs-target="#editUser"
                            data-bs-toggle="modal">Ubah</a>
                         <button type="button" class="btn btn-sm btn-danger me-3">Hapus</button>
-                        <a href="javascript:void(0);" class="btn btn-sm btn-label-success suspend-user me-3">Aktifkan
-                            Akun</a>
+                        @switch(!empty($consultant->account) && isset($consultant->account->state))
+                            @case("active")
+                                <a href="javascript:void(0);" class="btn btn-sm btn-label-warning suspend-user me-3">Matikan Akun</a>
+                                @break
+                            @case("non-active")
+                                <a href="javascript:void(0);" class="btn btn-sm btn-label-success suspend-user me-3">Aktifkan Akun</a>
+                                @break
+                        @endswitch
                     </div>
                 </div>
             </div>
@@ -191,127 +220,141 @@
                     </div>
                     <div class="card-body">
                         <div class="accordion accordion-flush accordion-arrow-left"
-                             id="ecommerceBillingAccordionAddress">
+                             id="deedOfCompanyAccordion">
+                            @forelse ($consultant->deed_of_company as $deed_of_company)
                             <div class="accordion-item border-bottom">
                                 <div class="accordion-header d-flex justify-content-between align-items-center flex-wrap flex-sm-nowrap"
-                                     id="headingHome">
+                                     id="heading{{ ucfirst($deed_of_company->type) . $deed_of_company->id }}">
                                     <a class="accordion-button collapsed" data-bs-toggle="collapse"
-                                       data-bs-target="#ecommerceBillingAddressHome" aria-expanded="false"
-                                       aria-controls="headingHome" role="button">
+                                       data-bs-target="#{{ $deed_of_company->type . $deed_of_company->id }}" aria-expanded="false"
+                                       aria-controls="heading{{ ucfirst($deed_of_company->type) . $deed_of_company->id }}" role="button">
                                         <span>
                                             <span class="d-flex gap-2 align-items-baseline">
                                                 <span class="h6 mb-1">Pendirian</span>
-                                                <span class="badge bg-label-success">Default</span>
+                                                @switch($deed_of_company->verification_respons)
+                                                    @case("1")
+                                                        <span class="badge bg-label-success">Terverifikasi</span>
+                                                        @break
+                                                    @case("2")
+                                                        <span class="badge bg-label-danger">Ditolak</span>
+                                                        @break
+                                                    @default
+                                                        <span class="badge bg-label-warning">Menunggu diverifikasi</span>
+                                                        @break
+                                                    @endswitch
                                             </span>
-                                            <span class="mb-0 text-muted">Akta Pendirian</span>
+                                            <span class="mb-0 text-muted">{{ ($deed_of_company->type == 'pendirian') ? 'Akta Pendirian' : 'Akta Perubahan' }}</span>
                                         </span>
                                     </a>
                                     <div class="d-flex gap-3 p-4 p-sm-0 pt-0 ms-1 ms-sm-0">
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm"><i
-                                                class="ti ti-trash ti-sm"></i></a>
+                                        <button href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete" id="{{ $deed_of_company->id }}">
+                                            <i class="ti ti-trash ti-sm"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <div id="ecommerceBillingAddressHome" class="accordion-collapse collapse"
-                                     data-bs-parent="#ecommerceBillingAccordionAddress">
+                                <div id="{{ $deed_of_company->type . $deed_of_company->id }}" class="accordion-collapse collapse"
+                                     data-bs-parent="#deedOfCompanyAccordion">
                                     <div class="accordion-body ps-4 ms-2">
-                                        <h6 class="mb-1">Violet Mendoza</h6>
-                                        <p class="mb-1">23 Shatinon Mekalan,</p>
-                                        <p class="mb-1">Melbourne, VIC 3000,</p>
-                                        <p class="mb-1">LondonUK</p>
+                                        <div
+                                            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-1">Tanggal Akta : <span class="text-muted">{{ date('d M Y', strtotime($deed_of_company->submitted)) }}</span></h6>
+                                            </div>
+                                            <div class="d-flex align-content-center flex-wrap gap-3">
+                                                <div class="d-flex gap-3">
+                                                    <button class="btn btn-sm btn-success">Verifikasi</button>
+                                                    <button class="btn btn-sm btn-warning">Tolak</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="justify-content-center">
+                                            <embed src="{{ asset('storage' . $deed_of_company->document) }}" frameborder="0" width="100%" height="400px" sandbox="allow-popups" allowfullscreen="true"></embed>
+                                            <a href="{{ asset('storage' . $deed_of_company->document) }}" class="btn btn-success" target="_blank">Download PDF</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="accordion-item border-bottom border-top-0">
-                                <div class="accordion-header d-flex justify-content-between align-items-center flex-wrap flex-sm-nowrap"
-                                     id="headingOffice">
-                                    <a class="accordion-button collapsed" data-bs-toggle="collapse"
-                                       data-bs-target="#ecommerceBillingAddressOffice" aria-expanded="false"
-                                       aria-controls="headingOffice" role="button">
-                                        <span class="d-flex flex-column">
-                                            <span class="h6 mb-0">Perubahan</span>
-                                            <span class="mb-0 text-muted">Akta Perubahan</span>
-                                        </span>
-                                    </a>
-                                    <div class="d-flex gap-3 p-4 p-sm-0 pt-0 ms-1 ms-sm-0">
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm"><i
-                                                class="ti ti-trash ti-sm"></i></a>
-                                    </div>
-                                </div>
-                                <div id="ecommerceBillingAddressOffice" class="accordion-collapse collapse"
-                                     aria-labelledby="headingOffice" data-bs-parent="#ecommerceBillingAccordionAddress">
-                                    <div class="accordion-body ps-4 ms-2">
-                                        <h6 class="mb-1">Violet Mendoza</h6>
-                                        <p class="mb-1">45 Roker Terrace,</p>
-                                        <p class="mb-1">Latheronwheel,</p>
-                                        <p class="mb-1">KW5 8NW</p>
-                                        <p class="mb-1">LondonUK</p>
-                                    </div>
-                                </div>
+                            @empty
+                            <div class="alert alert-warning justify-content-center">
+                                <span>Belum ada data...</span>
                             </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
                 <!-- Overview Company -->
 
                 <!-- List Owner Company -->
-                <div
-                    class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-4 text-center text-sm-start gap-2">
-                    <div class="mb-2 mb-sm-0">
-                        <h5 class="mb-1">Daftar Pemilik Perusahaan</h5>
+                <div class="card card-action mb-5">
+                    <div class="card-header align-items-center">
+                        <h5 class="card-action-title mb-0">Daftar Pemilik Perusahaan</h5>
+                        <div class="card-action-element">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#addNewOwner" id="btn-add-owner">
+                                <i class="ti ti-plus ti-xs me-1"></i>Tambah Pemilik
+                            </button>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#addNewOwner" id="btn-add-owner">
-                        <i class="ti ti-plus ti-xs me-1"></i>Tambah Pemilik
-                    </button>
-                </div>
-                <div class="row mb-4 g-4">
-                    <div class="col-12 col-xl-6 col-md-12">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="bg-label-primary rounded-3 text-center mb-3 pt-4">
-                                    <img class="img-fluid"
-                                         src="{{ asset('assets/img/illustrations/girl-with-laptop.png') }}"
-                                         alt="Card girl image" width="140" />
-                                </div>
-                                <h4 class="mb-2 pb-1 text-wrap">Upcoming Webinar</h4>
-                                <p class="small">
-                                    <span class="badge rounded-pill bg-gradient-info text-white bg-glow">Direktur</span>
-                                    <span
-                                        class="badge rounded-pill bg-gradient-success text-white bg-glow">Pemilik</span>
-                                </p>
-                                <div class="row mb-3 g-3">
-                                    <div class="col-12">
-                                        <div class="d-flex">
-                                            <div class="avatar flex-shrink-0 me-2">
+                    <div class="card-body">
+                        @forelse ($consultant->owners as $owner)
+                        <div class="col-12 col-xl-6 col-md-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="{{ (empty($owner->photo)) ? 'bg-label-primary' : '' }} rounded-3 text-center mb-3 pt-4">
+                                        <img class="img-fluid rounded-3"
+                                             src="{{ (!empty($owner->photo)) ? asset('storage' . $owner->photo) : asset('assets/img/illustrations/girl-with-laptop.png') }}"
+                                             alt="{{ $owner->name }}" width="100%" style="height: 200px !important;" />
+                                    </div>
+                                    <h4 class="mb-2 pb-1 text-wrap">{{ $owner->name }}</h4>
+                                    <p class="small">
+                                        @if ($owner->is_director == 'Y')
+                                        <span class="badge rounded-pill bg-gradient-info text-white bg-glow">Direktur</span>
+                                        @endif
+                                    </p>
+                                    <div class="row mb-3 g-3">
+                                        <div class="col-12">
+                                            <div class="d-flex">
+                                                <div class="avatar flex-shrink-0 me-2">
                                                 <span class="avatar-initial rounded bg-label-primary">
                                                     <i class="ti ti-phone-call ti-md"></i>
                                                 </span>
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0 text-nowrap">0812123123</h6>
-                                                <small>Telepon</small>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 text-nowrap">{{ $owner->phone }}</h6>
+                                                    <small>Telepon</small>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="d-flex">
-                                            <div class="avatar flex-shrink-0 me-2">
+                                        <div class="col-12">
+                                            <div class="d-flex">
+                                                <div class="avatar flex-shrink-0 me-2">
                                                 <span class="avatar-initial rounded bg-label-primary">
                                                     <i class="ti ti-mail ti-md"></i>
                                                 </span>
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0 text-nowrap">lutdinarfadila10@gmail.com</h6>
-                                                <small>Email</small>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 text-nowrap">{{ $owner->email }}</h6>
+                                                    <small>Email</small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#detailOwner"
+                                            class="btn btn-success w-100 btn-detail-owner" id="{{ $owner->id }}">Lihat</button>
                                 </div>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#detailOwner"
-                                   class="btn btn-primary w-100">Lihat</a>
                             </div>
                         </div>
+                        @empty
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="alert alert-warning justify-content-center">
+                                        <span>Belum ada data...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
                 <!--/ List Owner Company -->
@@ -507,9 +550,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card">
-                                            <div class="card-body">
-
+                                        <div class="card shadow-none">
+                                            <div class="">
+                                                <div class="row">
+                                                    @forelse ($consultant->sbu as $sbu)
+                                                    <div class="col-12 mb-4">
+                                                        <p for="">Tanggal masa berlaku : {{ $sbu->expire_date }}</p>
+                                                        <iframe src="{{ asset('storage') . $sbu->document }}" frameborder="0" width="100%" height="400" allowfullscreen></iframe>
+                                                        <a href="{{ asset('storage') . $sbu->document }}" target="_blank" class="btn btn-success my-2">Download</a>
+                                                    </div>
+                                                    <hr>
+                                                    @empty
+                                                    <div class="col-12">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <div class="alert alert-warning justify-content-center">
+                                                                    <span>Belum ada data...</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endforelse
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -541,7 +603,22 @@
                                         </div>
                                         <div class="card">
                                             <div class="card-body">
-
+                                                @forelse ($consultant->iujk as $iujk)
+                                                <div class="col-12 mb-4">
+                                                    <p for="">Tanggal masa berlaku : {{ $iujk->expire_date }}</p>
+                                                    <iframe src="{{ asset('storage') . $iujk->document }}" frameborder="0" width="100%" height="400" allowfullscreen></iframe>
+                                                    <a href="{{ asset('storage') . $iujk->document }}" target="_blank" class="btn btn-success my-2">Download</a>
+                                                </div>
+                                                <hr>
+                                                @empty
+                                                <div class="col-12">
+                                                    <div class="card shadow-none">
+                                                        <div class="alert alert-warning justify-content-center">
+                                                            <span>Belum ada data...</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforelse
                                             </div>
                                         </div>
                                     </div>
@@ -573,7 +650,22 @@
                                         </div>
                                         <div class="card">
                                             <div class="card-body">
-
+                                                @forelse ($consultant->siup as $siup)
+                                                <div class="col-12 mb-4">
+                                                    <p for="">Tanggal masa berlaku : {{ $siup->expire_date }}</p>
+                                                    <iframe src="{{ asset('storage') . $siup->document }}" frameborder="0" width="100%" height="400" allowfullscreen></iframe>
+                                                    <a href="{{ asset('storage') . $siup->document }}" target="_blank" class="btn btn-success my-2">Download</a>
+                                                </div>
+                                                <hr>
+                                                @empty
+                                                <div class="col-12">
+                                                    <div class="card shadow-none">
+                                                        <div class="alert alert-warning justify-content-center">
+                                                            <span>Belum ada data...</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforelse
                                             </div>
                                         </div>
                                     </div>
@@ -605,7 +697,22 @@
                                         </div>
                                         <div class="card">
                                             <div class="card-body">
-
+                                                @forelse ($consultant->nib as $nib)
+                                                <div class="col-12 mb-4">
+                                                    <p for="">Tanggal masa berlaku : {{ $nib->expire_date }}</p>
+                                                    <iframe src="{{ asset('storage') . $nib->document }}" frameborder="0" width="100%" height="400" allowfullscreen></iframe>
+                                                    <a href="{{ asset('storage') . $nib->document }}" target="_blank" class="btn btn-success my-2">Download</a>
+                                                </div>
+                                                <hr>
+                                                @empty
+                                                <div class="col-12">
+                                                    <div class="card shadow-none">
+                                                        <div class="alert alert-warning justify-content-center">
+                                                            <span>Belum ada data...</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforelse
                                             </div>
                                         </div>
                                     </div>
@@ -631,6 +738,7 @@
                     </div>
                 </div>
                 <div class="row g-4">
+                    @forelse ($consultant->personil as $personil)
                     <div class="col-xl-4 col-lg-6 col-md-6">
                         <div class="card">
                             <div class="card-body text-center">
@@ -640,335 +748,49 @@
                                         <i class="ti ti-dots-vertical text-muted"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0);">Ubah</a>
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider" />
                                         </li>
-                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="javascript:void(0);">Hapus</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="mx-auto my-3">
-                                    <img src="{{ asset('assets/img/avatars/3.png') }}" alt="Avatar Image"
+                                    <img src="{{ (!empty($personil->photo)) ? asset('storage') . $personil->photo : asset('assets/img/avatars/9.png') }}" alt="{{ $personil->name }}"
                                          class="rounded-circle w-px-100" />
                                 </div>
-                                <h4 class="mb-1 card-title">Mark Gilbert</h4>
-                                <span class="pb-1">UI Designer</span>
+                                <h4 class="mb-1 card-title">{{ $personil->name }}</h4>
+                                <span class="pb-1">{{ $personil->position }}</span>
                                 <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-secondary">Figma</span></a>
-                                    <a href="javascript:;"><span class="badge bg-label-warning">Sketch</span></a>
+                                    <a href="javascript:void(0);" class="me-1">
+                                        <span class="badge bg-label-info">{{ (!empty($personil->email)) ? $personil->email : "-" }}</span>
+                                    </a>
                                 </div>
 
-                                <div class="d-flex align-items-center justify-content-around my-3 py-1">
-                                    <div>
-                                        <h4 class="mb-0">18</h4>
-                                        <span>Projects</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">834</h4>
-                                        <span>Tasks</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">129</h4>
-                                        <span>Connections</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a href="javascript:;" class="btn btn-primary d-flex align-items-center me-3"><i
-                                            class="ti-xs me-1 ti ti-user-check me-1"></i>Connected</a>
-                                    <a href="javascript:;" class="btn btn-label-secondary btn-icon"><i
-                                            class="ti ti-mail ti-sm"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="dropdown btn-pinned">
-                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="ti ti-dots-vertical text-muted"></i>
+                                <div class="align-items-center">
+                                    <button type="button" class="btn btn-sm btn-success w-100 btn-detail-personil"><i
+                                            class="ti-xs me-1 ti ti-info-circle me-1"></i>Lihat
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider" />
-                                        </li>
-                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mx-auto my-3">
-                                    <img src="{{ asset('assets/img/avatars/12.png') }}" alt="Avatar Image"
-                                         class="rounded-circle w-px-100" />
-                                </div>
-                                <h4 class="mb-1 card-title">Eugenia Parsons</h4>
-                                <span class="pb-1">Developer</span>
-                                <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-danger">Angular</span></a>
-                                    <a href="javascript:;"><span class="badge bg-label-info">React</span></a>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-around my-3 py-1">
-                                    <div>
-                                        <h4 class="mb-0">112</h4>
-                                        <span>Projects</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">23.1k</h4>
-                                        <span>Tasks</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">1.28k</h4>
-                                        <span>Connections</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a href="javascript:;"
-                                       class="btn btn-label-primary d-flex align-items-center me-3"><i
-                                            class="ti-xs me-1 ti ti-user-plus me-1"></i>Connect</a>
-                                    <a href="javascript:;" class="btn btn-label-secondary btn-icon"><i
-                                            class="ti ti-mail ti-sm"></i></a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="dropdown btn-pinned">
-                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="ti ti-dots-vertical text-muted"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider" />
-                                        </li>
-                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mx-auto my-3">
-                                    <img src="{{ asset('assets/img/avatars/5.png') }}" alt="Avatar Image"
-                                         class="rounded-circle w-px-100" />
-                                </div>
-                                <h4 class="mb-1 card-title">Francis Byrd</h4>
-                                <span class="pb-1">Developer</span>
-                                <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-info">React</span></a>
-                                    <a href="javascript:;"><span class="badge bg-label-primary">HTML</span></a>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-around my-3 py-1">
-                                    <div>
-                                        <h4 class="mb-0">32</h4>
-                                        <span>Projects</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">1.25k</h4>
-                                        <span>Tasks</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">890</h4>
-                                        <span>Connections</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a href="javascript:;"
-                                       class="btn btn-label-primary d-flex align-items-center me-3"><i
-                                            class="ti-xs me-1 ti ti-user-plus me-1"></i>Connect</a>
-                                    <a href="javascript:;" class="btn btn-label-secondary btn-icon"><i
-                                            class="ti ti-mail ti-sm"></i></a>
+                    @empty
+                    <div class="col-12">
+                        <div class="card shadow-none">
+                            <div class="card-body">
+                                <div class="alert alert-warning">
+                                    <span>Belum ada data...</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="dropdown btn-pinned">
-                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="ti ti-dots-vertical text-muted"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider" />
-                                        </li>
-                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mx-auto my-3">
-                                    <img src="{{ asset('assets/img/avatars/8.png') }}" alt="Avatar Image"
-                                         class="rounded-circle w-px-100" />
-                                </div>
-                                <h4 class="mb-1 card-title">Leon Lucas</h4>
-                                <span class="pb-1">UI/UX Designer</span>
-                                <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-secondary">Figma</span></a>
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-warning">Sketch</span></a>
-                                    <a href="javascript:;"><span class="badge bg-label-primary">Photoshop</span></a>
-                                </div>
+                    @endforelse
 
-                                <div class="d-flex align-items-center justify-content-around my-3 py-1">
-                                    <div>
-                                        <h4 class="mb-0">86</h4>
-                                        <span>Projects</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">12.4k</h4>
-                                        <span>Tasks</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">890</h4>
-                                        <span>Connections</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a href="javascript:;"
-                                       class="btn btn-label-primary d-flex align-items-center me-3"><i
-                                            class="ti-xs me-1 ti ti-user-plus me-1"></i>Connect</a>
-                                    <a href="javascript:;" class="btn btn-label-secondary btn-icon"><i
-                                            class="ti ti-mail ti-sm"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="dropdown btn-pinned">
-                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="ti ti-dots-vertical text-muted"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider" />
-                                        </li>
-                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mx-auto my-3">
-                                    <img src="{{ asset('assets/img/avatars/9.png') }}" alt="Avatar Image"
-                                         class="rounded-circle w-px-100" />
-                                </div>
-                                <h4 class="mb-1 card-title">Jayden Rogers</h4>
-                                <span class="pb-1">Full Stack Developer</span>
-                                <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-info">React</span></a>
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-danger">Angular</span></a>
-                                    <a href="javascript:;"><span class="badge bg-label-primary">HTML</span></a>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-around my-3 py-1">
-                                    <div>
-                                        <h4 class="mb-0">244</h4>
-                                        <span>Projects</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">23.8k</h4>
-                                        <span>Tasks</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">2.14k</h4>
-                                        <span>Connections</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a href="javascript:;" class="btn btn-primary d-flex align-items-center me-3"><i
-                                            class="ti-xs me-1 ti ti-user-check me-1"></i>Connected</a>
-                                    <a href="javascript:;" class="btn btn-label-secondary btn-icon"><i
-                                            class="ti ti-mail ti-sm"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="dropdown btn-pinned">
-                                    <button type="button" class="btn dropdown-toggle hide-arrow p-0"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="ti ti-dots-vertical text-muted"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a>
-                                        </li>
-                                        <li>
-                                            <hr class="dropdown-divider" />
-                                        </li>
-                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mx-auto my-3">
-                                    <img src="{{ asset('assets/img/avatars/10.png') }}" alt="Avatar Image"
-                                         class="rounded-circle w-px-100" />
-                                </div>
-                                <h4 class="mb-1 card-title">Jeanette Powell</h4>
-                                <span class="pb-1">SEO</span>
-                                <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                                    <a href="javascript:;" class="me-1"><span
-                                            class="badge bg-label-success">Writing</span></a>
-                                    <a href="javascript:;"><span class="badge bg-label-secondary">Analysis</span></a>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-around my-3 py-1">
-                                    <div>
-                                        <h4 class="mb-0">32</h4>
-                                        <span>Projects</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">1.28k</h4>
-                                        <span>Tasks</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-0">1.27k</h4>
-                                        <span>Connections</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <a href="javascript:;"
-                                       class="btn btn-label-primary d-flex align-items-center me-3"><i
-                                            class="ti-xs me-1 ti ti-user-plus me-1"></i>Connect</a>
-                                    <a href="javascript:;" class="btn btn-label-secondary btn-icon"><i
-                                            class="ti ti-mail ti-sm"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -1103,33 +925,40 @@
                 <div class="card mb-4">
                     <h5 class="card-header">Kelola Akun</h5>
                     <div class="card-body">
-                        <form id="formChangePassword" method="POST" onsubmit="return false">
-                            <input type="hidden" name="newRole" class="form-control" value="3" required>
+                        <form id="userForm" method="POST" action="{{ url('consultants/user/save') }}">
+                            <div class="col-12" hidden>
+                                @csrf
+                                <input type="number" class="form-control" name="user" id="user" value="{{ (!empty($consultant->account)) ? $consultant->account->id : "" }}" {{ (!empty($consultant->account)) ? 'required' : '' }}>
+                                <input type="text" class="form-control" name="userRefer" id="userRefer" value="{{ $consultant->refer }}" required>
+                            </div>
                             <div class="mb-3 col-12">
                                 <label class="form-label" for="newUsername">Username</label>
-                                <input type="text" class="form-control" name="newUserName" placeholder="Username"
-                                       required>
+                                <input type="text" class="form-control" name="userName" id="userName" minlength="6" maxlength="30" placeholder="Username" value="{{ (!empty($consultant->account)) ? $consultant->account->username : '' }}" autocomplete="off">
                             </div>
                             <div class="alert alert-warning" role="alert">
                                 <h5 class="alert-heading mb-2">Ensure that these requirements are met</h5>
-                                <span>Minimum 8 characters long, uppercase & symbol</span>
+                                <ul class="ps-3 mb-0">
+                                    <li class="mb-1">Minimum 8 characters long - the more, the better</li>
+                                    <li class="mb-1">At least one lowercase character</li>
+                                    <li>At least one number, symbol, or whitespace character</li>
+                                </ul>
                             </div>
                             <div class="row">
-                                <div class="mb-3 col-12 col-sm-6 form-password-toggle">
-                                    <label class="form-label" for="newPassword">New Password</label>
+                                <div class="mb-3 col-6 form-password-toggle">
+                                    <label class="form-label" for="userPassword">Password</label>
                                     <div class="input-group input-group-merge">
-                                        <input class="form-control" type="password" id="newPassword" name="newPassword"
+                                        <input class="form-control" type="password" id="userPassword" name="userPassword" minlength="6"
                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
                                         <span class="input-group-text cursor-pointer"><i
                                                 class="ti ti-eye-off"></i></span>
                                     </div>
                                 </div>
 
-                                <div class="mb-3 col-12 col-sm-6 form-password-toggle">
-                                    <label class="form-label" for="confirmPassword">Confirm New Password</label>
+                                <div class="mb-3 col-6 form-password-toggle">
+                                    <label class="form-label" for="userConfirmPassword">Konfirmasi Password</label>
                                     <div class="input-group input-group-merge">
-                                        <input class="form-control" type="password" name="confirmPassword"
-                                               id="confirmPassword"
+                                        <input class="form-control" type="password" name="userConfirmPassword"
+                                               id="userConfirmPassword" minlength="6"
                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
                                         <span class="input-group-text cursor-pointer"><i
                                                 class="ti ti-eye-off"></i></span>
@@ -1149,15 +978,131 @@
     <!--/ User Content -->
 </div>
 
+<!-- Modal Detail Owner -->
+<div class="modal fade" id="detailOwner" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-simple modal-add-new-address" id="card-block">
+        <div class="modal-content p-3 p-md-5">
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-4">
+                    <h3 class="address-title mb-2">Detail Pemilik Perusahaan</h3>
+                    <p class="text-muted address-subtitle" id="detailOwnerTitle">-</p>
+                </div>
+
+                <!-- Start Form -->
+                <form class="row g-3">
+                    <div class="col-12">
+                        <label for="detailOwnerName" class="form-label">Nama <span class="text-danger">*</span></label>
+                        <p class="fs-6 fw-semibold" id="detailOwnerName">-</p>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="detailOwnerDirector" class="form-label">Sebagai Direktur?</label>
+                                <div class="w-25 d-flex justify-content-end">
+                                    <label class="switch switch-primary switch-sm me-4 pe-2">
+                                        <input type="checkbox" class="switch-input" id="detailOwnerDirector" disabled />
+                                        <span class="switch-toggle-slider">
+                                            <span class="switch-on">
+                                                <span class="switch-off"></span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="detailOwnerPhone" class="form-label">Kontak <span class="text-danger">*</span></label>
+                        <p class="fs-6 fw-semibold" id="detailOwnerPhone">-</p>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="detailOwnerEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                        <p class="fs-6 fw-semibold">
+                            <a href="" class="text-decoration-none" id="detailOwnerEmail">-</a>
+                        </p>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="detailOwnerPhoto" class="form-label">Pas Foto</label>
+                        <div class="rounded-3 text-center">
+                            <img class="img-fluid rounded-3" src="{{ asset('assets/img/avatars/14.png') }}" width="100%" style="height: 200px !important;" id="detailOwnerPhoto" />
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="detailOwnerIdCard" class="form-label">KTP</label>
+                        <div class="rounded-3 text-center">
+<!--                            <iframe src="" id="detailOwnerIdCard" class="img-fluid rounded" frameborder="0" width="100%" style="height: 200px !important; left: 0 !important; right: 0 !important; top: 0 !important; bottom: 0 !important;"></iframe>-->
+                            <iframe src="" id="detailOwnerIdCard" frameborder="0" style="overflow:hidden; overflow-x:hidden; overflow-y:hidden; height:200px; width:100%; position:relative; top:0px; left:0px; right:0px; bottom:0px;" height="200px" width="100%" align="left" allowfullscreen></iframe>
+                        </div>
+                        <div class="row">
+                            <div
+                                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mt-3 mb-3">
+                                <div class="d-flex align-content-center flex-wrap gap-3">
+                                    <div class="d-flex gap-3">
+                                        <div id="verifications-panel-id-card">
+                                            <button type="button" class="btn btn-sm btn-success btn-verification-id-card" id="">Verifikasi</button>
+                                            <button type="button" class="btn btn-sm btn-warning btn-reject-id-card" id="">Tolak</button>
+                                        </div>
+                                        <div id="rejects-panel-id-card">
+                                            <p class="text-danger" id="reject-message-id-card"></p>
+                                            <input type="file" class="form-control" name="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="detailOwnerTaxNumber" class="form-label">No. NPWP</label>
+                        <p class="fs-6 fw-semibold" id="detailOwnerTaxNumber">NPWP</p>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="detailOwnerTaxDocument" class="form-label">Dokumen NPWP</label>
+                        <div class="rounded-3 text-center">
+                            <irame src="" class="img-fluid rounded-3" id="detailOwnerTaxDocument" frameborder="0" style="height: 200px !important;" ></irame>
+                            <div class="row mt-2">
+                                <div
+                                    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mt-3 mb-3">
+                                    <div class="d-flex align-content-center flex-wrap gap-3">
+                                        <div class="d-flex gap-3">
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-success" id="btn-verification-tax-document">Verifikasi</a>
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-warning" id="btn-reject-tax-document">Tolak</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-5 text-center">
+                        <button type="reset" class="btn btn-label-danger" data-bs-dismiss="modal" aria-label="Close">
+                            Tutup
+                        </button>
+                    </div>
+                </form>
+                <!-- End Form -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ Modal Detail Owner -->
+
 <!-- Modal -->
 @include('_partials/modals/edit_consultant')
 @include('_partials/modals/deed_of_company')
-<!--@include('_partials/modals/owner')-->
-<!--@include('_partials/modals/sbu')-->
-<!--@include('_partials/modals/iujk')-->
-<!--@include('_partials/modals/siup')-->
-<!--@include('_partials/modals/nib')-->
-<!--@include('_partials/modals/personil')-->
+@include('_partials/modals/owner')
+@include('_partials/modals/sbu')
+@include('_partials/modals/iujk')
+@include('_partials/modals/siup')
+@include('_partials/modals/nib')
+@include('_partials/modals/personil')
 
 <!-- End Modal -->
 
@@ -1172,6 +1117,7 @@
 <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/block-ui/block-ui.js') }}"></script>
 
 <!-- Main JS -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
@@ -1179,6 +1125,86 @@
 <!-- Page JS -->
 <script src="{{ asset('assets/js/customize/consultant-detail.js') }}"></script>
 <script>
+    $("#verifications-panel-id-card").hide();
+    $("#rejects-panel-id-card").hide();
+
+    var btnDetailOwner = $('.btn-detail-owner'),
+        cardSection = $('#card-block');
+
+    if (btnDetailOwner.length && cardSection.length) {
+        btnDetailOwner.on('click', function () {
+            $.blockUI({
+                message:
+                    '<div class="sk-wave mx-auto">' +
+                        '<div class="sk-rect sk-wave-rect"></div>' +
+                        '<div class="sk-rect sk-wave-rect"></div>' +
+                        '<div class="sk-rect sk-wave-rect"></div>' +
+                        '<div class="sk-rect sk-wave-rect"></div>' +
+                        '<div class="sk-rect sk-wave-rect"></div>' +
+                    '</div>',
+                css: {
+                    backgroundColor: 'transparent',
+                    border: '0'
+                },
+                overlayCSS: {
+                    opacity: 0.5
+                }
+            });
+
+            let owner   = this.id;
+            $.post("{{ url('consultants/owner/detail') }}", {
+                "_token": "{{ csrf_token() }}",
+                "owner": owner
+            }, function (data, status) {
+                if (status === 'success') {
+                    console.log(data.owner);
+                    if (data.status === 'success' && data.owner !== null) {
+                        document.getElementById('detailOwnerTitle').innerHTML       = data.owner.name;
+                        document.getElementById('detailOwnerName').innerHTML        = data.owner.name;
+                        document.getElementById('detailOwnerDirector').checked      = (data.owner.is_director === 'Y');
+                        document.getElementById('detailOwnerEmail').innerHTML       = data.owner.email;
+                        document.getElementById('detailOwnerEmail').href            = "mailto:" + data.owner.email;
+                        document.getElementById('detailOwnerPhone').innerHTML       = data.owner.phone;
+                        document.getElementById('detailOwnerPhoto').src             = (data.owner.photo !== null) ? "{{ asset('storage') }}" + data.owner.photo : "";
+                        document.getElementById('detailOwnerIdCard').src            = (data.owner.id_card !== null) ? "{{ asset('storage') }}" + data.owner.id_card : "";
+                        document.getElementById('detailOwnerTaxNumber').innerHTML   = (data.owner.tax_id_number !== null) ? data.owner.tax_id_number : "-";
+                        document.getElementById('detailOwnerTaxDocument').src       = (data.owner.tax_id_document !== null) ? "{{ asset('storage') }}" + data.owner.tax_id_document : "";
+                        if (data.owner.id_card_verification_respons === 0) {
+                            document.getElementsByClassName('btn-verification-id-card').value   = data.owner.id;
+                            document.getElementsByClassName('btn-reject-id-card').value         = data.owner.id;
+                            $("#verifications-panel-id-card").show();
+                        } else if (data.owner.id_card_verification_respons === 2) {
+                            document.getElementById('reject-message-id-card').innerHTML         = data.owner.id_card_verification_message;
+                            $("#rejects-panel-id-card").show();
+                        }
+
+                    } else {
+                        Swal.fire({
+                            icon: 'danger',
+                            title: 'Kesalahan',
+                            text: data.message,
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'danger',
+                        title: 'Kesalahan',
+                        text: 'Terjadi kesalahan saat memuat data',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    });
+                }
+                $.unblockUI();
+            });
+        });
+    }
+
+
+
 
 </script>
 @endsection

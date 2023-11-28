@@ -88,8 +88,8 @@
                     <div class="col-xl-6 col-md-6">
 
                             <div class="card overflow-hidden mb-4" style="height: 100px; width: 60%">
-                                    <div class="card-body" id="horizontal-example">
-                                        <div class="d-inline">
+                                <div class="card-body" id="horizontal-example">
+                                    <div class="d-inline">
                                         <button class="btn btn-md btn-primary me-2">2020</button>
                                         <button class="btn btn-md btn-primary me-2">2021</button>
                                         <button class="btn btn-md btn-primary me-2">2022</button>

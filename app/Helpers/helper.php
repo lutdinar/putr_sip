@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('hashing_string'))
 {
     function hashing_string($values): string
@@ -26,13 +28,13 @@ if (!function_exists('random_string'))
 }
 
 if (!function_exists('base64_file')) {
-    function base64_encode_file($file)
+    function base64_encode_file($file, $nameAttr)
     {
-        $temp_file		= $file['file']['tmp_name'];
-        $file_name		= $file['file']['name'];
+        $temp_file		= $file[$nameAttr]['tmp_name'];
+        $file_name		= $file[$nameAttr]['name'];
         $type_file		= strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         $data_image		= file_get_contents($temp_file);
-        $encode_image	= 'data:' . $file['file']['type'] . ';base64,' . base64_encode($data_image);
+        $encode_image	= 'data:' . $file[$nameAttr]['type'] . ';base64,' . base64_encode($data_image);
 
         return $encode_image;
     }
@@ -61,5 +63,24 @@ if (!function_exists('base64_decode_file')) {
         }
 
         return $path;
+    }
+}
+
+if (!function_exists('file_store')) {
+    function file_store($filename, $request, $location)
+    {
+        if (!is_dir(storage_path('/app/public') . $location)) {
+            mkdir(storage_path('/app/public') . $location, 0777, true);
+//            return storage_path('/app/public') . $location;
+        }
+
+        $new_location   = '/public' . $location;
+        $store_file     = Storage::putFileAs($new_location, $request, $filename);
+
+        if (!empty($store_file)) {
+            return $location . $filename;
+        } else {
+            return null;
+        }
     }
 }
