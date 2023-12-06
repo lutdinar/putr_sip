@@ -21,19 +21,23 @@
                 <div class="row m-sm-1 m-0">
                     <div class="col-md-7 mb-md-0 mb-0 ps-0">
                         <div class="d-flex mb-1 gap-2 align-items-center">
-                            <span class="fw-bold fs-4">Nama Ruas Jalan </span>
+                            <span class="fw-bold fs-4">{{ $infrastructure->name }}</span>
                         </div>
-                        <p class="mb-2">Kecamatan</p>
+                        <p class="mb-2">
+                            {{ $infrastructure->district }}
+                        </p>
                     </div>
                     <div class="col-md-5">
                         <dl class="row mb-0 align-items-center">
                             <dt class="col-sm-4 mb-0 mb-sm-0 text-md-end">
-                                <span class="fw-normal">Tahun:</span>
+                                <span class="fw-normal">Tahun: </span>
                             </dt>
                             <dd class="col-sm-8 mb-0 mb-sm-0 px-0 px-lg-0">
-                                <select name="" id="" class="form-control select2 ms-auto ps-0">
+                                <select name="filterYear" id="filterYear" class="form-control select2 ms-auto ps-0">
                                     <option value="">Pilih Tahun</option>
-                                    <option value="2020">2020</option>
+                                    @foreach($years as $year)
+                                        <option value="{{$year->name}}" {{ request()->get('year') == $year->name ? 'selected' : '' }}>{{ $year->name }}</option>
+                                    @endforeach
                                 </select>
                             </dd>
                         </dl>
@@ -53,7 +57,7 @@
                     <div class="row">
                         <div class="mb-3 col-12">
                             <img
-                                src="../../assets/img/backgrounds/speaker.png"
+                                src="{{ asset('assets/img/line-jalan.png') }}"
                                 alt="user-avatar"
                                 class="d-block w-100 h-px-200 rounded"
                                 id="uploadedAvatar" />
@@ -61,10 +65,10 @@
                     </div>
 
                     <div class="row">
-                        <div class="mb-3 col-12">
-                            <label class="form-label">Upload Lokasi Kegiatan</label>
-                            <input type="file" class="form-control" id="inputGroupFile02" />
-                        </div>
+{{--                        <div class="mb-3 col-12">--}}
+{{--                            <label class="form-label">Upload Lokasi Kegiatan</label>--}}
+{{--                            <input type="file" class="form-control" id="inputGroupFile02" />--}}
+{{--                        </div>--}}
                         <div class="mb-3 col-12">
                             <label for="apiAccess" class="form-label">Jenis Kegiatan</label
                             >
@@ -96,9 +100,11 @@
 
                     <div class="nav-align-top">
                         <ul class="nav nav-tabs nav-fill" role="tablist">
+{{--                            <li class="nav-item" {{ (Session()->get('x-user-role') == 'consultant' && $task->type != 'perencanaan') ? 'hidden' : '' }}>--}}
                             <li class="nav-item">
                                 <button
                                     type="button"
+{{--                                    class="nav-link {{ ($task->type == 'perencanaan') ? 'active' : '' }}"--}}
                                     class="nav-link active"
                                     role="tab"
                                     data-bs-toggle="tab"
@@ -108,9 +114,11 @@
                                     Konsultan Perencanaan
                                 </button>
                             </li>
+{{--                            <li class="nav-item" {{ (Session()->get('x-user-role') == 'consultant' && $task->type != 'pengawas') ? 'hidden' : '' }}>--}}
                             <li class="nav-item">
                                 <button
                                     type="button"
+{{--                                    class="nav-link {{ ($task->type == 'pengawas') ? 'active' : '' }}"--}}
                                     class="nav-link"
                                     role="tab"
                                     data-bs-toggle="tab"
@@ -120,9 +128,11 @@
                                     Konsultan Pengawas
                                 </button>
                             </li>
+{{--                            <li class="nav-item" {{ (Session()->get('x-user-role') == 'consultant' && $task->type != 'konstruksi') ? 'hidden' : '' }}>--}}
                             <li class="nav-item">
                                 <button
                                     type="button"
+{{--                                    class="nav-link {{ ($task->type == 'konstruksi') ? 'active' : '' }}"--}}
                                     class="nav-link"
                                     role="tab"
                                     data-bs-toggle="tab"
@@ -134,21 +144,26 @@
                             </li>
                         </ul>
                         <div class="tab-content px-0 pb-0">
+{{--                            <div class="tab-pane fade {{ ($task->type == 'perencanaan') ? 'show active' : '' }}" id="task-planning" role="tabpanel">--}}
                             <div class="tab-pane fade show active" id="task-planning" role="tabpanel">
-                                <form action="">
+                                <form action="{{ url('tasks/save') }}" class="mt-3" method="post">
+                                    <div class="col-12" hidden>
+                                        @csrf
+                                        <input type="text" name="type" value="pengawas" required>
+                                    </div>
                                     <h6>1. Penyedia Jasa</h6>
                                     <div class="row mb-3">
                                         <label class="col-sm-3 col-form-label">Konsultan Perencana</label>
                                         <div class="col-sm-9">
-                                            <select id="" class="select2 form-select" data-allow-clear="true">
-                                                <option value="">Cari Penyedia Jasa</option>
+                                            <select id="consultant-planning-select2" class="form-select">
+
                                             </select>
                                         </div>
                                     </div>
                                     <div class="row mb-5">
                                         <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
                                         <div class="col-sm-9">
-                                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
+                                            <textarea name="address" id="address-planning" cols="30" rows="3" class="form-control" readonly></textarea>
                                         </div>
                                     </div>
                                     <hr class="my-4 mx-n4" />
@@ -156,30 +171,30 @@
                                     <div class="row mb-3">
                                         <label class="col-sm-3 col-form-label">No Kontrak</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" placeholder="Masukan Nomor Kontrak" />
+                                            <input type="text" class="form-control" placeholder="Masukan Nomor Kontrak" value="{{ (!empty($infrastructure->planner)) ? $infrastructure->planner->contract_number : '' }}" />
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label class="col-sm-3 col-form-label" for="multicol-country">Nilai Kontrak</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" placeholder="Masukan Nilai Kontrak">
+                                            <input type="text" class="form-control" placeholder="Masukan Nilai Kontrak" value="{{ (!empty($infrastructure->planner)) ? $infrastructure->planner->contract_value : '' }}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <label class="col-sm-3 col-form-label">Sumber Dana</label>
                                         <div class="col-sm-9">
-                                            <input type="text" class="form-control" placeholder="Masukan Sumber Dana">
+                                            <input type="text" class="form-control" placeholder="Masukan Sumber Dana" value="{{ (!empty($infrastructure->planner)) ? $infrastructure->planner->budget_source : '' }}">
                                         </div>
                                     </div>
                                     <hr class="my-4 mx-n4" />
                                     <h6>3. Waktu Pelaksanaan</h6>
                                     <div class="row mb-3">
-                                        <label class="col-sm-3 col-form-label">Masa Kontrak</label>
+                                        <label class="col-sm-3 col-form-label">Masa Kontrak (hari kalender)</label>
                                         <div class="col-sm-9">
                                             <input
                                                 type="text"
                                                 class="form-control"
-                                                placeholder="Masukan Masa Kontrak" />
+                                                placeholder="Masukan Masa Kontrak" value="{{ (!empty($infrastructure->planner)) ? $infrastructure->planner->contract_duration : '' }}" />
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -189,9 +204,10 @@
                                                 type="text"
                                                 id="multicol-birthdate"
                                                 class="form-control dob-picker"
-                                                placeholder="YYYY-MM-DD" />
+                                                placeholder="YYYY-MM-DD" value="{{ (!empty($infrastructure->planner)) ? $infrastructure->planner->contract_start : '' }}" />
                                         </div>
                                     </div>
+                                    @if(Session()->has('x-user-role') == 'administrator')
                                     <div class="row pt-1">
                                         <div class="col-sm-12">
                                             <div class="float-end">
@@ -199,16 +215,21 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                 </form>
                             </div>
-
+{{--                            <div class="tab-pane fade {{ ($task->type == 'pengawas') ? 'show active' : '' }}" id="task-supervisor" role="tabpanel">--}}
                             <div class="tab-pane fade" id="task-supervisor" role="tabpanel">
-                                <form action="">
+                                <form action="{{ url('tasks/save') }}" class="mt-3" method="post">
+                                    <div class="col-12" hidden>
+                                        @csrf
+                                        <input type="text" name="type" value="pengawas" required>
+                                    </div>
                                     <h6>1. Penyedia Jasa</h6>
                                     <div class="row mb-3">
                                         <label class="col-sm-3 col-form-label">Konsultan Pengawas</label>
                                         <div class="col-sm-9">
-                                            <select id="" class="select2 form-select" data-allow-clear="true">
+                                            <select id="consultant-supervisor-select2" class="form-select">
                                                 <option value="">Cari Penyedia Jasa</option>
                                             </select>
                                         </div>
@@ -216,7 +237,7 @@
                                     <div class="row mb-5">
                                         <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
                                         <div class="col-sm-9">
-                                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
+                                            <textarea name="address" id="address-supervisor" cols="30" rows="3" class="form-control" readonly></textarea>
                                         </div>
                                     </div>
                                     <hr class="my-4 mx-n4" />
@@ -269,13 +290,18 @@
                                     </div>
                                 </form>
                             </div>
+{{--                            <div class="tab-pane fade {{ ($task->type == 'konstruksi') ? 'show active' : '' }}" id="task-contractor" role="tabpanel">--}}
                             <div class="tab-pane fade" id="task-contractor" role="tabpanel">
-                                <form action="">
+                                <form action="{{ url('tasks/save') }}" class="mt-3" method="post">
+                                    <div class="col-12" hidden>
+                                        @csrf
+                                        <input type="text" name="type" value="konstruksi" required>
+                                    </div>
                                     <h6>1. Penyedia Jasa</h6>
                                     <div class="row mb-3">
                                         <label class="col-sm-3 col-form-label">Kontraktor Pelaksana</label>
                                         <div class="col-sm-9">
-                                            <select id="" class="select2 form-select" data-allow-clear="true">
+                                            <select id="consultant-contractor-select2" class="form-select">
                                                 <option value="">Cari Penyedia Jasa</option>
                                             </select>
                                         </div>
@@ -283,7 +309,7 @@
                                     <div class="row mb-5">
                                         <label class="col-sm-3 col-form-label" for="multicol-email">Alamat</label>
                                         <div class="col-sm-9">
-                                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" readonly></textarea>
+                                            <textarea name="address" id="address-contractor" cols="30" rows="3" class="form-control" readonly></textarea>
                                         </div>
                                     </div>
                                     <hr class="my-4 mx-n4" />
@@ -345,107 +371,142 @@
 </div>
 
 <div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Informasi Kegiatan</h5>
-                <div id="accordionTaskInformation" class="accordion">
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                aria-expanded="true"
-                                data-bs-target="#accordionTaskInformation-1"
-                                aria-controls="accordionTaskInformation-1">
-                                1. Laporan Harian
-                            </button>
-                        </h2>
+    <div class="col-xl-12 mt-5">
+        <ul class="nav nav-pills flex-column flex-md-row mb-4" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-planner-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-planner" type="button" role="tab" aria-controls="pills-planner"
+                        aria-selected="true">
+                    <i class="ti ti-user-check ti-xs me-1"></i>Perencanaan
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-supervisor-tab" data-bs-toggle="pill" data-bs-target="#pills-supervisor"
+                        type="button" role="tab" aria-controls="pills-supervisor" aria-selected="false">
+                    <i class="ti ti-link ti-xs me-1"></i> Pengawas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-contractor-tab" data-bs-toggle="pill" data-bs-target="#pills-contractor"
+                        type="button" role="tab" aria-controls="pills-contractor" aria-selected="false">
+                    <i class="ti ti-users ti-xs me-1"></i> Kontraktor Pelaksana
+                </button>
+            </li>
+        </ul>
 
-                        <div id="accordionTaskInformation-1" class="accordion-collapse collapse show">
-                            <div class="accordion-body">
-                                <div class="card-datatable table-responsive">
-                                    <table class="datatables-category-list table border-top">
-                                        <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th>Categories</th>
-                                            <th class="text-nowrap text-sm-end">Total Products &nbsp;</th>
-                                            <th class="text-nowrap text-sm-end">Total Earning</th>
-                                            <th class="text-lg-center">Actions</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+        <style>
+            .nav~.tab-content {
+                background: transparent;
+            }
 
-                                <div
-                                    class="offcanvas offcanvas-end"
-                                    tabindex="-1"
-                                    id="offcanvasEcommerceCategoryList"
-                                    aria-labelledby="offcanvasEcommerceCategoryListLabel">
-                                    <!-- Offcanvas Header -->
-                                    <div class="offcanvas-header py-4">
-                                        <h5 id="offcanvasEcommerceCategoryListLabel" class="offcanvas-title">Add Category</h5>
-                                        <button
-                                            type="button"
-                                            class="btn-close bg-label-secondary text-reset"
-                                            data-bs-dismiss="offcanvas"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <!-- Offcanvas Body -->
-                                    <div class="offcanvas-body border-top">
-                                        <form class="pt-0" id="eCommerceCategoryListForm" onsubmit="return true">
-                                            <!-- Title -->
-                                            <div class="mb-3">
-                                                <label class="form-label" for="ecommerce-category-title">Title</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="ecommerce-category-title"
-                                                    placeholder="Enter category title"
-                                                    name="categoryTitle"
-                                                    aria-label="category title" />
+            .tab-content {
+                padding: 0;
+            }
+        </style>
+
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-planner" role="tabpanel"
+                 aria-labelledby="pills-planner-tab">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Informasi Kegiatan</h5>
+                        <div id="accordionTaskInformation" class="accordion">
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        aria-expanded="true"
+                                        data-bs-target="#accordionTaskInformation-1"
+                                        aria-controls="accordionTaskInformation-1">
+                                        1. Laporan Harian
+                                    </button>
+                                </h2>
+
+                                <div id="accordionTaskInformation-1" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="card-datatable table-responsive">
+                                            <table class="datatables-category-list table border-top">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Categories</th>
+                                                    <th class="text-nowrap text-sm-end">Total Products &nbsp;</th>
+                                                    <th class="text-nowrap text-sm-end">Total Earning</th>
+                                                    <th class="text-lg-center">Actions</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+
+                                        <div
+                                            class="offcanvas offcanvas-end"
+                                            tabindex="-1"
+                                            id="offcanvasEcommerceCategoryList"
+                                            aria-labelledby="offcanvasEcommerceCategoryListLabel">
+                                            <!-- Offcanvas Header -->
+                                            <div class="offcanvas-header py-4">
+                                                <h5 id="offcanvasEcommerceCategoryListLabel" class="offcanvas-title">Add Category</h5>
+                                                <button
+                                                    type="button"
+                                                    class="btn-close bg-label-secondary text-reset"
+                                                    data-bs-dismiss="offcanvas"
+                                                    aria-label="Close"></button>
                                             </div>
-                                            <!-- Slug -->
-                                            <div class="mb-3">
-                                                <label class="form-label" for="ecommerce-category-slug">Slug</label>
-                                                <input
-                                                    type="text"
-                                                    id="ecommerce-category-slug"
-                                                    class="form-control"
-                                                    placeholder="Enter slug"
-                                                    aria-label="slug"
-                                                    name="slug" />
-                                            </div>
-                                            <!-- Image -->
-                                            <div class="mb-3">
-                                                <label class="form-label" for="ecommerce-category-image">Attachment</label>
-                                                <input class="form-control" type="file" id="ecommerce-category-image" />
-                                            </div>
-                                            <!-- Parent category -->
-                                            <div class="mb-3 ecommerce-select2-dropdown">
-                                                <label class="form-label" for="ecommerce-category-parent-category">Parent category</label>
-                                                <select
-                                                    id="ecommerce-category-parent-category"
-                                                    class="select2 form-select"
-                                                    data-placeholder="Select parent category">
-                                                    <option value="">Select parent Category</option>
-                                                    <option value="Household">Household</option>
-                                                    <option value="Management">Management</option>
-                                                    <option value="Electronics">Electronics</option>
-                                                    <option value="Office">Office</option>
-                                                    <option value="Automotive">Automotive</option>
-                                                </select>
-                                            </div>
-                                            <!-- Description -->
-                                            <div class="mb-3">
-                                                <label class="form-label">Description</label>
-                                                <div class="form-control p-0 py-1">
-                                                    <div class="comment-editor border-0" id="ecommerce-category-description"></div>
-                                                    <div class="comment-toolbar border-0">
-                                                        <div class="d-flex justify-content-end">
+                                            <!-- Offcanvas Body -->
+                                            <div class="offcanvas-body border-top">
+                                                <form class="pt-0" id="eCommerceCategoryListForm" onsubmit="return true">
+                                                    <!-- Title -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="ecommerce-category-title">Title</label>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            id="ecommerce-category-title"
+                                                            placeholder="Enter category title"
+                                                            name="categoryTitle"
+                                                            aria-label="category title" />
+                                                    </div>
+                                                    <!-- Slug -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="ecommerce-category-slug">Slug</label>
+                                                        <input
+                                                            type="text"
+                                                            id="ecommerce-category-slug"
+                                                            class="form-control"
+                                                            placeholder="Enter slug"
+                                                            aria-label="slug"
+                                                            name="slug" />
+                                                    </div>
+                                                    <!-- Image -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="ecommerce-category-image">Attachment</label>
+                                                        <input class="form-control" type="file" id="ecommerce-category-image" />
+                                                    </div>
+                                                    <!-- Parent category -->
+                                                    <div class="mb-3 ecommerce-select2-dropdown">
+                                                        <label class="form-label" for="ecommerce-category-parent-category">Parent category</label>
+                                                        <select
+                                                            id="ecommerce-category-parent-category"
+                                                            class="select2 form-select"
+                                                            data-placeholder="Select parent category">
+                                                            <option value="">Select parent Category</option>
+                                                            <option value="Household">Household</option>
+                                                            <option value="Management">Management</option>
+                                                            <option value="Electronics">Electronics</option>
+                                                            <option value="Office">Office</option>
+                                                            <option value="Automotive">Automotive</option>
+                                                        </select>
+                                                    </div>
+                                                    <!-- Description -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Description</label>
+                                                        <div class="form-control p-0 py-1">
+                                                            <div class="comment-editor border-0" id="ecommerce-category-description"></div>
+                                                            <div class="comment-toolbar border-0">
+                                                                <div class="d-flex justify-content-end">
                               <span class="ql-formats me-0">
                                 <button class="ql-bold"></button>
                                 <button class="ql-italic"></button>
@@ -455,274 +516,294 @@
                                 <button class="ql-link"></button>
                                 <button class="ql-image"></button>
                               </span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    <!-- Status -->
+                                                    <div class="mb-4 ecommerce-select2-dropdown">
+                                                        <label class="form-label">Select category status</label>
+                                                        <select
+                                                            id="ecommerce-category-status"
+                                                            class="select2 form-select"
+                                                            data-placeholder="Select category status">
+                                                            <option value="">Select category status</option>
+                                                            <option value="Scheduled">Scheduled</option>
+                                                            <option value="Publish">Publish</option>
+                                                            <option value="Inactive">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <!-- Submit and reset -->
+                                                    <div class="mb-3">
+                                                        <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Add</button>
+                                                        <button type="reset" class="btn bg-label-danger" data-bs-dismiss="offcanvas">Discard</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                            <!-- Status -->
-                                            <div class="mb-4 ecommerce-select2-dropdown">
-                                                <label class="form-label">Select category status</label>
-                                                <select
-                                                    id="ecommerce-category-status"
-                                                    class="select2 form-select"
-                                                    data-placeholder="Select category status">
-                                                    <option value="">Select category status</option>
-                                                    <option value="Scheduled">Scheduled</option>
-                                                    <option value="Publish">Publish</option>
-                                                    <option value="Inactive">Inactive</option>
-                                                </select>
-                                            </div>
-                                            <!-- Submit and reset -->
-                                            <div class="mb-3">
-                                                <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Add</button>
-                                                <button type="reset" class="btn bg-label-danger" data-bs-dismiss="offcanvas">Discard</button>
-                                            </div>
-                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-2"
+                                        aria-controls="accordionTaskInformation-2">
+                                        2. Laporan Mingguan
+                                    </button>
+                                </h2>
+                                <div id="accordionTaskInformation-2" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        We accept Visa®, MasterCard®, American Express®, and PayPal®. Our servers encrypt all
+                                        information submitted to them, so you can be confident that your credit card information
+                                        will be kept safe and secure.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-3"
+                                        aria-controls="accordionTaskInformation-3">
+                                        3. Laporan Bulanan
+                                    </button>
+                                </h2>
+                                <div id="accordionTaskInformation-3" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        For any technical difficulties you are experiencing with our website, please contact us at
+                                        our
+                                        <a href="javascript:void(0);">support portal</a>, or you can call us toll-free at
+                                        <span class="fw-medium">1-000-000-000</span>, or email us at
+                                        <a href="javascript:void(0);">order@companymail.com</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-4"
+                                        aria-controls="accordionTaskInformation-4">
+                                        4. Progress Harian
+                                    </button>
+                                </h2>
+                                <div id="accordionTaskInformation-4" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        If you have paying users or you are developing any SaaS products then you need an Extended
+                                        License. For each products, you need a license. You can get free lifetime updates as well.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-5"
+                                        aria-controls="accordionTaskInformation-5">
+                                        5. Progress Mingguan
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-5" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-6"
+                                        aria-controls="accordionTaskInformation-6">
+                                        6. Progress Bulanan
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-6" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-7"
+                                        aria-controls="accordionTaskInformation-7">
+                                        7. Kurva S
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-7" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-8"
+                                        aria-controls="accordionTaskInformation-8">
+                                        8. Laporan Grafik Cuaca dan Tenaga Kerja
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-8" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-9"
+                                        aria-controls="accordionTaskInformation-9">
+                                        9. Pemeriksaan dan Pengujian
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-9" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-10"
+                                        aria-controls="accordionTaskInformation-10">
+                                        10. Perubahan Di Lapangan
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-10" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-11"
+                                        aria-controls="accordionTaskInformation-11">
+                                        11. As Built Drawing
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-11" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-12"
+                                        aria-controls="accordionTaskInformation-12">
+                                        12. Dokumentasi 0%, 50%, 100%
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-12" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card accordion-item shadow-lg">
+                                <h2 class="accordion-header">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionTaskInformation-13"
+                                        aria-controls="accordionTaskInformation-13">
+                                        13. Dokumen Lainnya
+                                    </button>
+                                </h2>
+                                <div id="accordionPayment-13" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
+                                        jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
+                                        lollipop sesame snaps.
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-2"
-                                aria-controls="accordionTaskInformation-2">
-                                2. Laporan Mingguan
-                            </button>
-                        </h2>
-                        <div id="accordionTaskInformation-2" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                We accept Visa®, MasterCard®, American Express®, and PayPal®. Our servers encrypt all
-                                information submitted to them, so you can be confident that your credit card information
-                                will be kept safe and secure.
-                            </div>
-                        </div>
+            <div class="tab-pane fade" id="pills-supervisor" role="tabpanel"
+                 aria-labelledby="pills-supervisor-tab">
+                <div class="card">
+                    <div class="card-body">
+
                     </div>
+                </div>
+            </div>
 
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-3"
-                                aria-controls="accordionTaskInformation-3">
-                                3. Laporan Bulanan
-                            </button>
-                        </h2>
-                        <div id="accordionTaskInformation-3" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                For any technical difficulties you are experiencing with our website, please contact us at
-                                our
-                                <a href="javascript:void(0);">support portal</a>, or you can call us toll-free at
-                                <span class="fw-medium">1-000-000-000</span>, or email us at
-                                <a href="javascript:void(0);">order@companymail.com</a>
-                            </div>
-                        </div>
-                    </div>
+            <div class="tab-pane fade" id="pills-contractor" role="tabpanel"
+                 aria-labelledby="pills-contractor-tab">
+                <div class="card">
+                    <div class="card-body">
 
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-4"
-                                aria-controls="accordionTaskInformation-4">
-                                4. Progress Harian
-                            </button>
-                        </h2>
-                        <div id="accordionTaskInformation-4" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                If you have paying users or you are developing any SaaS products then you need an Extended
-                                License. For each products, you need a license. You can get free lifetime updates as well.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-5"
-                                aria-controls="accordionTaskInformation-5">
-                                5. Progress Mingguan
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-5" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-6"
-                                aria-controls="accordionTaskInformation-6">
-                                6. Progress Bulanan
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-6" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-7"
-                                aria-controls="accordionTaskInformation-7">
-                                7. Kurva S
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-7" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-8"
-                                aria-controls="accordionTaskInformation-8">
-                                8. Laporan Grafik Cuaca dan Tenaga Kerja
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-8" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-9"
-                                aria-controls="accordionTaskInformation-9">
-                                9. Pemeriksaan dan Pengujian
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-9" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-10"
-                                aria-controls="accordionTaskInformation-10">
-                                10. Perubahan Di Lapangan
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-10" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-11"
-                                aria-controls="accordionTaskInformation-11">
-                                11. As Built Drawing
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-11" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-12"
-                                aria-controls="accordionTaskInformation-12">
-                                12. Dokumentasi 0%, 50%, 100%
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-12" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item shadow-lg">
-                        <h2 class="accordion-header">
-                            <button
-                                class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#accordionTaskInformation-13"
-                                aria-controls="accordionTaskInformation-13">
-                                13. Dokumen Lainnya
-                            </button>
-                        </h2>
-                        <div id="accordionPayment-13" class="accordion-collapse collapse">
-                            <div class="accordion-body">
-                                No, This is not subscription based item.Pastry pudding cookie toffee bonbon jujubes
-                                jujubes powder topping. Jelly beans gummi bears sweet roll bonbon muffin liquorice. Wafer
-                                lollipop sesame snaps.
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -752,6 +833,155 @@
             $this.wrap('<div class="position-relative"></div>').select2({
                 dropdownParent: $this.parent()
             });
+        });
+    }
+
+    $("#consultant-planning-select2").select2({
+        ajax: {
+            delay: 250,
+            url: '{{ url('consultants/json') }}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1,
+                }
+            },
+            processResults: function(data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: (params.page * 20) < data.totalRows
+                    }
+                };
+            },
+            cache: true
+        },
+        placeholder: 'Cari Penyedia Jasa',
+        // minimumInputLength: 3,
+        allowClear: true,
+        disabled: {{ (Session()->get('x-user-role') == 'administrator') ? 'false' : true }}
+    });
+
+    $("#consultant-supervisor-select2").select2({
+        ajax: {
+            delay: 250,
+            url: '{{ url('consultants/json') }}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1,
+                }
+            },
+            processResults: function(data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: (params.page * 20) < data.totalRows
+                    }
+                };
+            },
+            cache: true
+        },
+        placeholder: 'Cari Penyedia Jasa',
+        // minimumInputLength: 3,
+        allowClear: true,
+        disabled: {{ (Session()->get('x-user-role') == 'administrator') ? 'false' : true }}
+    });
+
+    $("#consultant-contractor-select2").select2({
+        ajax: {
+            delay: 250,
+            url: '{{ url('consultants/json') }}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1,
+                }
+            },
+            processResults: function(data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: (params.page * 20) < data.totalRows
+                    }
+                };
+            },
+            cache: true
+        },
+        placeholder: 'Cari Penyedia Jasa',
+        // minimumInputLength: 3,
+        allowClear: true,
+        disabled: {{ (Session()->get('x-user-role') == 'administrator') ? 'false' : true }}
+    });
+
+
+    // setup selected
+    let infrastructure        = {!! $infrastructure->toJson() !!};
+    if (infrastructure != null && infrastructure.planner != null) {
+        $.ajax({
+            type: 'get',
+            url: '{{ url('tasks/consultant') }}',
+            data: {
+                search: infrastructure.planner.consultants
+            }
+        }).then(function (data) {
+            if (data.status == 'success') {
+                var optPlanner      = new Option(data.data.name, data.data.id, true, true);
+                $("#consultant-planning-select2").append(optPlanner).trigger('change');
+                $("#address-planning").val(data.data.address);
+            } else {
+                $("#consultant-planning-select2").val(null).trigger('change');
+            }
+        });
+    }
+
+    $('#consultant-planning-select2').on('select2:select', function(e) {
+        let data = e.params.data;
+        console.log(data);
+    });
+
+    if (infrastructure != null && infrastructure.supervisor != null) {
+        $.ajax({
+            type: 'get',
+            url: '{{ url('tasks/consultant') }}',
+            data: {
+                search: infrastructure.supervisor.consultants
+            }
+        }).then(function (data) {
+            if (data.status == 'success') {
+                var optSupervisor      = new Option(data.data.name, data.data.id, true, true);
+                $("#consultant-supervisor-select2").append(optSupervisor).trigger('change');
+                $("#address-supervisor").val(data.data.address);
+            } else {
+                $("#consultant-supervisor-select2").val(null).trigger('change');
+            }
+        });
+    }
+
+    if (infrastructure != null && infrastructure.contractor != null) {
+        $.ajax({
+            type: 'get',
+            url: '{{ url('tasks/consultant') }}',
+            data: {
+                search: infrastructure.contractor.consultants
+            }
+        }).then(function (data) {
+            if (data.status == 'success') {
+                var optContractor      = new Option(data.data.name, data.data.id, true, true);
+                $("#consultant-contractor-select2").append(optContractor).trigger('change');
+                $("#address-contractor").val(data.data.address);
+            } else {
+                $("#consultant-contractor-select2").val(null).trigger('change');
+            }
         });
     }
 
@@ -920,12 +1150,16 @@
             // Button for offcanvas
             buttons: [
                 {
-                    text: '<i class="ti ti-plus ti-xs me-0 me-sm-2"></i><span class="d-none d-sm-inline-block">Add Category</span>',
-                    className: 'add-new btn btn-primary ms-2',
-                    attr: {
-                        'data-bs-toggle': 'offcanvas',
-                        'data-bs-target': '#offcanvasEcommerceCategoryList'
+                    text: '<i class="ti ti-plus ti-xs me-0 me-sm-2"></i><span class="d-none d-sm-inline-block">Tambah Laporan Harian</span>',
+                    className: 'btn btn-primary ms-2',
+                    // attr: {
+                    //     'data-bs-toggle': 'offcanvas',
+                    //     'data-bs-target': '#offcanvasEcommerceCategoryList'
+                    // }
+                    action: function () {
+                        window.location.href = '{{ (!empty($infrastructure->contractor)) ? url("tasks/day_report?task=") . $infrastructure->contractor->id : 'javascript:void(0);' }}';
                     }
+
                 }
             ],
             // For responsive popup

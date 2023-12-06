@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Consultant;
 use App\Models\User;
+use App\Models\UserForgotPassword;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
@@ -18,6 +20,15 @@ class UsersController extends Controller
             'active'        => User::where(['state' => 'active', 'deleted_at' => null])->count(),
             'non_active'    => User::where(['state' => 'non-active', 'deleted_at' => null])->count()
         ]);
+    }
+
+    public function login()
+    {
+        if (Session::has('x-user-log') && (Session::get('x-user-log') == 'logged_in') || !empty(Session::get('x-user-name'))){
+            return redirect('/');
+        }
+
+        return view('login');
     }
 
     public function forgot()
@@ -73,15 +84,29 @@ class UsersController extends Controller
         $password       = hashing_string($request->input('passWord'));
 
         $user   = User::where('password', $password)
-            ->where('state', 'active')
             ->where('username', $username)
             ->orWhere('email', $username)
             ->whereNull('deleted_at')->first();
 
         if (!empty($user)) {
+            if ($user->state == 'inactive') {
+                $checkUser      = UserForgotPassword::find($user->id);
+                if (!empty($checkUser)) {
+                    return redirect('authentications')->with([
+                        'status'        => 'failed',
+                        'message'       => 'Akun anda di non-aktifkan karena telah mengajukan pengaturan ulang kata sandi! Mohon tunggu instruksi atau pemberitahuan dari Administrator'
+                    ]);
+                } else {
+                    return redirect('authentications')->with([
+                        'status'        => 'failed',
+                        'message'       => 'Akun anda sedang di non-aktifkan! Silahkan hubungi Administrator'
+                    ]);
+                }
+            }
+
             if ($user->role === 'consultant') {
                 $consultant     = Consultant::where('account', $user->id)->first();
-                session(['refer' => $consultant->refer]);
+                session(['x-consultant' => $consultant->id, 'refer' => $consultant->refer]);
             }
             session([
                 'x-user-name'   => $user->username,
@@ -101,6 +126,45 @@ class UsersController extends Controller
     {
         $request->session()->flush();
         return redirect('authentications');
+    }
+
+    public function forgot_password()
+    {
+        return view('forgot');
+    }
+
+    public function forgot_store(Request $request)
+    {
+        $username       = $request->input('email-username');
+
+        $user           = User::where('state', 'active')
+                                ->where('username', $username)
+                                ->orWhere('email', $username)
+                                ->whereNull('deleted_at')->first();
+        if (!empty($user)) {
+            $users          = User::find($user->id);
+            $users->state   = 'inactive';
+            $users->save();
+
+            // save request forgot password
+            $userForgotPassword             = new UserForgotPassword();
+            $userForgotPassword->users      = $user->id;
+            $userForgotPassword->state      = 0;
+            $save                           = $userForgotPassword->save();
+
+            if ($save) {
+                $status         = 'success';
+                $message        = 'Permohonan lupa password akun Anda telah terkirim. Mohon menunggu instruksi atau pemberitahuan dari Administrator';
+            } else {
+                $status         = 'failed';
+                $message        = 'Permohonan lupa password akun Anda gagal dikirim! Silahkan coba lagi';
+            }
+
+            return redirect('authentications/forgot')->with(['status' => $status, 'message' => $message]);
+        } else {
+            // user not found
+            return redirect('authentications/forgot')->with(['status' => 'failed', 'message' => 'Pengguna dengan Username atau Email ' . $username . ' tidak ditemukan!']);
+        }
     }
 
     // get list of users on json

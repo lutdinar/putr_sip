@@ -778,6 +778,7 @@ Dropzone.autoDiscover = false;
 //     url: '/upload'
 // });
 
+
 $(".btn-delete").click(function () {
     let document        = this.id;
 

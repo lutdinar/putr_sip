@@ -11,7 +11,7 @@
                     <div class="avatar me-2">
                         <span class="avatar-initial rounded bg-label-info"><i class="ti ti-road ti-md"></i></span>
                     </div>
-                    <h4 class="ms-1 mb-0">42</h4>
+                    <h4 class="ms-1 mb-0">{{ $roads }}</h4>
                 </div>
                 <p class="mb-1">Ruas Jalan</p>
                 <p class="mb-0">
@@ -29,7 +29,7 @@
                               <i class="ti ti-building-bridge-2 ti-md"></i>
                           </span>
                     </div>
-                    <h4 class="ms-1 mb-0">8</h4>
+                    <h4 class="ms-1 mb-0">{{ $bridges }}</h4>
                 </div>
                 <p class="mb-1">Jembatan</p>
                 <p class="mb-0">
@@ -47,7 +47,7 @@
                               <i class="ti ti-clock ti-md"></i>
                           </span>
                     </div>
-                    <h4 class="ms-1 mb-0">27</h4>
+                    <h4 class="ms-1 mb-0">{{ $task_run }}</h4>
                 </div>
                 <p class="mb-1">Kegiatan Berjalan</p>
                 <p class="mb-0">
@@ -63,7 +63,7 @@
                     <div class="avatar me-2">
                         <span class="avatar-initial rounded bg-label-success"><i class="ti ti-check ti-md"></i></span>
                     </div>
-                    <h4 class="ms-1 mb-0">13</h4>
+                    <h4 class="ms-1 mb-0">{{ $task_end }}</h4>
                 </div>
                 <p class="mb-1">Kegiatan Selesai</p>
                 <p class="mb-0">
@@ -75,6 +75,16 @@
 </div>
 <!--/ Card Border Shadow -->
 
+@if (session('status'))
+    <div class="alert <?= (session('status') == 'success') ? 'alert-success' : 'alert-danger' ?> alert-dismissible d-flex align-items-center" role="alert">
+        <span class="alert-icon <?= (session('status') == 'success') ? 'text-success' : 'text-danger' ?> me-2">
+            <i class="ti <?= (session('status') == 'success') ? 'ti-check' : 'ti-ban' ?> ti-xs"></i>
+        </span>
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -85,54 +95,29 @@
                         <h5 class="mb-1 mt-3">Daftar Kegiatan</h5>
                         <p class="text-muted">Bidang Bina Marga</p>
                     </div>
-                    <div class="col-xl-6 col-md-6">
-
-                            <div class="card overflow-hidden mb-4" style="height: 100px; width: 60%">
-                                <div class="card-body" id="horizontal-example">
-                                    <div class="d-inline">
-                                        <button class="btn btn-md btn-primary me-2">2020</button>
-                                        <button class="btn btn-md btn-primary me-2">2021</button>
-                                        <button class="btn btn-md btn-primary me-2">2022</button>
-                                        <button class="btn btn-md btn-primary me-2">2023</button>
-                                        <button class="btn btn-md btn-primary me-2">2024</button>
-                                        <button class="btn btn-md btn-primary me-2">2025</button>
-                                        <button class="btn btn-md btn-primary me-2">2026</button>
-                                        <button class="btn btn-md btn-primary me-2">2027</button>
-                                        <button class="btn btn-md btn-primary me-2">2028</button>
-                                        <button class="btn btn-md btn-primary me-2">2029</button>
-                                        <button class="btn btn-md btn-primary me-2">2030</button>
-                                        <button class="btn btn-md btn-primary me-2">2031</button>
-                                        <button class="btn btn-md btn-primary me-2">2032</button>
-                                        <button class="btn btn-md btn-primary me-2">2033</button>
-                                        <button class="btn btn-md btn-primary me-2">2034</button>
-                                        <button class="btn btn-md btn-primary me-2">2035</button>
-                                        <button class="btn btn-md btn-primary me-2">2036</button>
-                                        <button class="btn btn-md btn-primary me-2">2037</button>
-                                    </div>
-                                </div>
+                    <div class="col-xl-6 col-md-8 col-sm-12">
+                        <div class="card shadow-none overflow-hidden" id="yearScroll">
+                            <div class="d-flex flex-row">
+                                <button class="btn btn-md btn-primary me-2 btn-task-road" value="2020">2020</button>
+                                <button class="btn btn-md btn-primary me-2 btn-task-road" value="2021">2021</button>
+                                <button class="btn btn-md btn-primary me-2 btn-task-road" value="2022">2022</button>
+                                <button class="btn btn-md btn-primary me-2 btn-task-road" value="2023">2023</button>
+                                <button class="btn btn-md btn-primary me-2 btn-task-road" value="2024">2024</button>
+                                <button class="btn btn-md btn-primary me-2 btn-task-road">2025</button>
+                                <button class="btn btn-md btn-primary me-2">2026</button>
+                                <button class="btn btn-md btn-primary me-2">2027</button>
+                                <button class="btn btn-md btn-primary me-2">2028</button>
+                                <button class="btn btn-md btn-primary me-2">2029</button>
+                                <button class="btn btn-md btn-primary me-2">2030</button>
+                                <button class="btn btn-md btn-primary me-2">2031</button>
+                                <button class="btn btn-md btn-primary me-2">2032</button>
+                                <button class="btn btn-md btn-primary me-2">2033</button>
+                                <button class="btn btn-md btn-primary me-2">2034</button>
+                                <button class="btn btn-md btn-primary me-2">2035</button>
+                                <button class="btn btn-md btn-primary me-2">2036</button>
+                                <button class="btn btn-md btn-primary me-2">2037</button>
                             </div>
-<!--                        <div class="card shadow-none overflow-hidden" id="yearScroll" style="">-->
-<!--                            <div class="d-lg-flex flex-row">-->
-<!--                                <button class="btn btn-md btn-primary me-2">2020</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2021</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2022</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2023</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2024</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2025</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2026</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2027</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2028</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2029</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2030</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2031</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2032</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2033</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2034</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2035</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2036</button>-->
-<!--                                <button class="btn btn-md btn-primary me-2">2037</button>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -186,14 +171,14 @@
                     <div class="tab-pane fade show active" id="navs-orders-id" role="tabpanel">
                         <h5>Filter Ruas Jalan Kabupaten</h5>
                         <div class="row g-3 mb-3">
-                            <div class="col-4">
-                                <select name="year" id="year" class="select2">
-                                    <option value="">Pilih Tersedia/Tidak Tersedia Kegiatan</option>
-                                    <option value="">Tersedia</option>
-                                    <option value="">Tidak Tersedia</option>
-                                </select>
-                            </div>
-                            <div class="col-2">
+{{--                            <div class="col-xl-4 col-sm-12">--}}
+{{--                                <select name="available" id="available" class="select2">--}}
+{{--                                    <option value="">Pilih Tersedia/Tidak Tersedia Kegiatan</option>--}}
+{{--                                    <option value="">Tersedia</option>--}}
+{{--                                    <option value="">Tidak Tersedia</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+                            <div class="col-xl-4 col-sm-12">
                                 <select name="condition" id="condition" class="select2">
                                     <option value="">Pilih Kondisi</option>
                                     <option value="baik">Baik</option>
@@ -202,7 +187,7 @@
                                     <option value="rusak_berat">Rusak Berat</option>
                                 </select>
                             </div>
-                            <div class="col-2">
+                            <div class="col-xl-3 col-sm-12">
                                 <select name="surface" id="surface" class="select2">
                                     <option value="">Pilih Permukaan</option>
                                     <option value="beton">Beton</option>
@@ -211,14 +196,14 @@
                                     <option value="tanah">Tanah/Belum Tembus</option>
                                 </select>
                             </div>
-                            <div class="col-2">
+                            <div class="col-xl-3 col-sm-12">
                                 <select name="status" id="status" class="select2">
                                     <option value="">Pilih Status</option>
                                     <option value="proses">Sedang Dikerjakan</option>
                                     <option value="belum">Selesai Dikerjakan</option>
                                 </select>
                             </div>
-                            <div class="col-2">
+                            <div class="col-xl-2 col-sm-12">
                                 <button class="btn btn-success me-md-2 me-1">Cari</button>
                                 <button class="btn btn-danger">Reset</button>
                             </div>
@@ -228,7 +213,6 @@
                                 <table class="datatables-roads table border-top">
                                     <thead>
                                     <tr>
-                                        <th></th>
                                         <th>No</th>
                                         <th>Kode Ruas</th>
                                         <th>Nama</th>
@@ -239,6 +223,7 @@
                                         <th>Kondisi Sedang</th>
                                         <th>Kondisi Rusak Ringan</th>
                                         <th>Kondisi Rusak Berat</th>
+                                        <th>Status</th>
                                         <th>Kontraktor Konstruksi</th>
                                         <th>Konsultan Perencana</th>
                                         <th>Konsultan Pengawas</th>
@@ -248,7 +233,7 @@
                                 </table>
                             </div>
                             <!-- Offcanvas to add new user -->
-                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddRoad"
+                            <div class="offcanvas offcanvas-end" id="offcanvasAddRoad"
                                  aria-labelledby="offcanvasAddRoadLabel">
                                 <div class="offcanvas-header">
                                     <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Tambah Ruas Jalan Kabupaten</h5>
@@ -256,74 +241,59 @@
                                             aria-label="Close"></button>
                                 </div>
                                 <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
-                                    <form action="#" class="add-new needs-validation pt-0" id="addNewRoadForm" novalidate>
+                                    <form action="{{ url('tasks/create_infrastructure') }}" class="pt-0" id="addNewRoadForm" method="post">
+                                        <div class="mb-3" hidden>
+                                            @csrf
+                                            <input type="text" name="type" value="road" class="form-control" required>
+                                        </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-code">Kode Ruas</label>
-                                            <input type="text" class="form-control" id="add-road-code" placeholder="Kode Ruas" name="code" aria-label="Kode Ruas" required />
-                                            <div class="valid-feedback">Looks good!</div>
-                                            <div class="invalid-feedback">Please enter your name.</div>
+                                            <input type="text" class="form-control" id="add-road-code" placeholder="Kode Ruas" name="add-road-code" aria-label="Kode Ruas" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-name">Nama Ruas</label>
                                             <input type="text" class="form-control" id="add-road-name" placeholder="Nama Ruas"
-                                                   name="name" aria-label="Nama Ruas" required />
+                                                   name="add-road-name" aria-label="Nama Ruas" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-district">Kecamatan</label>
-                                            <select id="add-road-district" class="select2 form-select" required>
-                                                <option value="">Pilih Kecamatan</option>
-                                                <option value="Australia">Australia</option>
-                                                <option value="Bangladesh">Bangladesh</option>
-                                                <option value="Belarus">Belarus</option>
-                                                <option value="Brazil">Brazil</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="China">China</option>
-                                                <option value="France">France</option>
-                                                <option value="Germany">Germany</option>
-                                                <option value="India">India</option>
-                                                <option value="Indonesia">Indonesia</option>
-                                                <option value="Israel">Israel</option>
-                                                <option value="Italy">Italy</option>
-                                                <option value="Japan">Japan</option>
-                                                <option value="Korea">Korea, Republic of</option>
-                                                <option value="Mexico">Mexico</option>
-                                                <option value="Philippines">Philippines</option>
-                                                <option value="Russia">Russian Federation</option>
+                                            <select id="add-road-district" name="add-road-district[]" class="select2 form-select" >
+
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-length">Panjang Ruas</label>
                                             <input type="number" id="add-road-length" class="form-control" placeholder="Contoh: 4.3"
-                                                   aria-label="Panjang Ruas" name="length" required />
+                                                   aria-label="Panjang Ruas" name="add-road-length" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-width">Lebar Ruas</label>
                                             <input type="number" id="add-road-width" class="form-control" placeholder="Contoh: 1.1"
-                                                   aria-label="Lebar Ruas" name="width" required />
+                                                   aria-label="Lebar Ruas" name="add-road-width" />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-good">Kondisi Baik</label>
                                             <input type="number" id="add-road-good" class="form-control"
-                                                   placeholder="Nilai Kondisi Baik" aria-label="Nilai Kondisi Baik" name="good"
-                                                   required />
+                                                   placeholder="Nilai Kondisi Baik" aria-label="Nilai Kondisi Baik" name="add-road-good"
+                                            />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-medium">Kondisi Sedang</label>
                                             <input type="number" id="add-road-medium" class="form-control"
-                                                   placeholder="Nilai Kondisi Sedang" aria-label="Nilai Kondisi Sedang" name="medium"
-                                                   required />
+                                                   placeholder="Nilai Kondisi Sedang" aria-label="Nilai Kondisi Sedang" name="add-road-medium"
+                                            />
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="add-road-slight">Kondisi Rusak Ringan</label>
                                             <input type="number" id="add-road-slight" class="form-control"
                                                    placeholder="Nilai Kondisi Rusak Ringan" aria-label="Nilai Kondisi Rusak Ringan"
-                                                   name="slight" required />
+                                                   name="add-road-slight" />
                                         </div>
-                                        <div class="mb-4">
+                                        <div class="mb-3">
                                             <label class="form-label" for="add-road-severely">Kondisi Rusak Berat</label>
                                             <input type="number" id="add-road-severely" class="form-control"
                                                    placeholder="Nilai Kondisi Rusak Berat" aria-label="Nilai Kondisi Rusak Berat"
-                                                   name="severely" required />
+                                                   name="add-road-severely" />
                                         </div>
 
                                         <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Simpan</button>
@@ -400,15 +370,8 @@
     const yearScroll = document.getElementById('yearScroll'),
         horizontalExample = document.getElementById('horizontal-example');
 
-    // if (yearScroll) {
-    //     new PerfectScrollbar(yearScroll, {
-    //         wheelPropagation: false,
-    //         suppressScrollY: true
-    //     });
-    // }
-
-    if (horizontalExample) {
-        new PerfectScrollbar(horizontalExample, {
+    if (yearScroll) {
+        new PerfectScrollbar(yearScroll, {
             wheelPropagation: false,
             suppressScrollY: true
         });
@@ -417,7 +380,7 @@
     // Variable declaration for table
     var dt_road_table = $('.datatables-roads'),
         select2 = $('.select2'),
-        roadView = 'roads/detail?ref=',
+        taskView = '{{ url("/tasks/detail?refer=") }}',
         statusObj = {
             1: {
                 title: 'Pending',
@@ -442,25 +405,74 @@
         });
     }
 
-    load_data_table($("#year").val());
+    $("#add-road-district").select2({
+        dropdownParent: $("#offcanvasAddRoad"),
+        ajax: {
+            delay: 250,
+            url: '{{ url('tasks/district') }}',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1,
+                }
+            },
+            processResults: function(data, params) {
+                params.page = params.page || 1;
 
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: (params.page * 20) < data.totalRows
+                    }
+                };
+            },
+            cache: true
+        },
+        placeholder: 'Cari Kecamatan',
+        // minimumInputLength: 3,
+        allowClear: true,
+        multiple: true
+    });
+
+    // initialize year
+    let years       = null;
+
+    if (years == null) {
+        years       = new Date().getFullYear();
+        var btns    = document.querySelector('.btn-task-road');
+        $(".btn-task-road").each(function () {
+            if ($(this).val() == years) {
+                $(this).removeClass('btn-primary');
+                $(this).addClass('btn-label-success');
+            }
+        })
+    }
+
+    load_data_table((years == null) ? new Date().getFullYear() : years);
 
     function load_data_table(year)
     {
-        console.log(year);
         if (dt_road_table.length) {
-            var yearSelect		= $("#year").val();
-
             dt_road_table.DataTable({
                 destroy: true,
-                // ajax: "{{ url('tasks/get_roads?year=') }}" + yearSelect,
-                ajax: "{{ url('tasks/get_roads') }}",
+                ajax: {
+                    url: "{{ url('tasks/get_roads') }}",
+                    data: {
+                        "available": $("#available").val(),
+                        "condition": $("#condition").val(),
+                        "surface": $("#surface").val(),
+                        "status": $("#status").val(),
+                        "year": year
+                    }
+                },
+                processing: true,
                 lengthMenu: [ 10, 25, 50, 100, 250 ],
                 columns: [
                     // columns according to JSON
-                    {
-                        data: ''
-                    },
+                    // {
+                    //     data: ''
+                    // },
                     {
                         data: ''
                     },
@@ -486,50 +498,60 @@
                         data: 'medium_condition'
                     },
                     {
-                        data: 'slight_damaged_condition'
+                        data: 'slight_damage_condition'
                     },
                     {
-                        data: 'severely_damaged_condition'
+                        data: 'severely_damage_condition'
                     },
                     {
-                        data: 'year'
+                        data: 'status'
+                    },
+                    {
+                        data: 'planner'
+                    },
+                    {
+                        data: 'supervisor'
+                    },
+                    {
+                        data: 'contractor'
                     },
                     {
                         data: 'action'
                     }
                 ],
                 columnDefs: [
-                    {
+                    // {
                         // For Responsive
-                        className: 'control',
-                        searchable: false,
-                        orderable: false,
-                        responsivePriority: 2,
-                        targets: 0,
-                        render: function(data, type, full, meta) {
-                            return '';
-                        }
-                    },
+                        // className: 'control',
+                        // searchable: false,
+                        // orderable: false,
+                        // responsivePriority: 2,
+                        // targets: 0,
+                        // render: function(data, type, full, meta) {
+                        //     return '';
+                        // }
+                    // },
                     {
                         searchable: false,
-                        targets: 1,
+                        targets: 0,
                         render: function (data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
                     {
                         searchable: true,
-                        targets: 4,
+                        targets: 3,
                         render: function (data, type, full, meta) {
-                            if (full.district_secondary === null || full.district_secondary === '0') {
-                                return data.name;
-                            } else {
-                                return data.name + ", " + full.district_secondary.name;
-                            }
+                            return data;
+                            // if (full.district_secondary === null || full.district_secondary === '0') {
+                            //     return data.name;
+                            // } else {
+                            //     return data.name + ", " + full.district_secondary.name;
+                            // }
                         }
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         render: function(data, type, full, meta) {
                             if (data == null || data == "") {
                                 return "-";
@@ -539,12 +561,22 @@
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 5,
                         render: function(data, type, full, meta) {
                             if (data == null || data == "") {
                                 return "-";
                             } else {
                                 return data + " M";
+                            }
+                        }
+                    },
+                    {
+                        targets: 6,
+                        render: function(data, type, full, meta) {
+                            if (data == null || data == "") {
+                                return "-";
+                            } else {
+                                return data + " KM";
                             }
                         }
                     },
@@ -580,11 +612,40 @@
                     },
                     {
                         targets: 10,
-                        render: function(data, type, full, meta) {
-                            if (data == null || data == "") {
+                        render: function (data, type, full, meta) {
+                            return "-";
+                        }
+                    },
+                    {
+                        // planner
+                        targets: 11,
+                        render: function (data, type, full, meta) {
+                            if (data == null) {
                                 return "-";
                             } else {
-                                return data + " KM";
+                                return (data.consultants) ? data.consultants.name : '-';
+                            }
+                        }
+                    },
+                    {
+                        // supervisor
+                        targets: 12,
+                        render: function (data, type, full, meta) {
+                            if (data == null) {
+                                return "-";
+                            } else {
+                                return (data.consultants) ? data.consultants.name : '-';
+                            }
+                        }
+                    },
+                    {
+                        // contractor
+                        targets: 13,
+                        render: function (data, type, full, meta) {
+                            if (data == null) {
+                                return "-";
+                            } else {
+                                return (data.consultants) ? data.consultants.name : '-';
                             }
                         }
                     },
@@ -602,7 +663,7 @@
                                 '<a href="javascript:;" class="text-body dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-sm mx-1"></i></a>' +
                                 '<div class="dropdown-menu dropdown-menu-end m-0">' +
                                 '<a href="' +
-                                roadView + full.id +
+                                taskView + full.code + '&year=' + years +
                                 '" class="dropdown-item">View</a>' +
                                 '<a href="javascript:;" class="dropdown-item">Suspend</a>' +
                                 '</div>' +
@@ -767,47 +828,159 @@
                         }
                     }
                 ],
-                responsive: {
-                    details: {
-                        display: $.fn.dataTable.Responsive.display.modal({
-                            header: function(row) {
-                                var data = row.data();
-                                return data['name'];
-                            }
-                        }),
-                        type: 'column',
-                        renderer: function(api, rowIdx, columns) {
-                            var data = $.map(columns, function(col, i) {
-                                return col.title !==
-                                '' // ? Do not show row in modal popup if title is blank (for check box)
-                                    ?
-                                    '<tr data-dt-row="' +
-                                    col.rowIndex +
-                                    '" data-dt-column="' +
-                                    col.columnIndex +
-                                    '">' +
-                                    '<td>' +
-                                    col.title +
-                                    ':' +
-                                    '</td> ' +
-                                    '<td>' +
-                                    col.data +
-                                    '</td>' +
-                                    '</tr>' :
-                                    '';
-                            }).join('');
-
-                            return data ? $('<table class="table"/><tbody />').append(data) : false;
-                        }
-                    }
-                },
+                // responsive: {
+                //     details: {
+                //         display: $.fn.dataTable.Responsive.display.modal({
+                //             header: function(row) {
+                //                 var data = row.data();
+                //                 return data['name'];
+                //             }
+                //         }),
+                //         type: 'column',
+                //         renderer: function(api, rowIdx, columns) {
+                //             var data = $.map(columns, function(col, i) {
+                //                 return col.title !==
+                //                 '' // ? Do not show row in modal popup if title is blank (for check box)
+                //                     ?
+                //                     '<tr data-dt-row="' +
+                //                     col.rowIndex +
+                //                     '" data-dt-column="' +
+                //                     col.columnIndex +
+                //                     '">' +
+                //                     '<td>' +
+                //                     col.title +
+                //                     ':' +
+                //                     '</td> ' +
+                //                     '<td>' +
+                //                     col.data +
+                //                     '</td>' +
+                //                     '</tr>' :
+                //                     '';
+                //             }).join('');
+                //
+                //             return data ? $('<table class="table"/><tbody />').append(data) : false;
+                //         }
+                //     }
+                // },
             });
         }
     }
 
-    $("#year").change(function () {
-        var year	= $("#year").val();
-        load_data_table(year);
+    let prevYears = null;
+
+    $(".btn-task-road").click(function () {
+        // document.getElementById(this.id).classList.add('btn-label-success');
+        // document.getElementById("MyElement").classList.remove('btn-primary');
+        $(".btn-task-road").removeClass('btn-label-success');
+        $(".btn-task-road").addClass('btn-primary');
+
+        $(this).removeClass('btn-primary');
+        $(this).addClass('btn-label-success');
+
+        load_data_table(this.value);
     });
+
+    const addNewRoadForm    = document.getElementById('addNewRoadForm');
+    const addNewRoadFormValidation  = FormValidation.formValidation(addNewRoadForm, {
+        fields: {
+            'add-road-code': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan kode ruas jalan'
+                    },
+                }
+            },
+            'add-road-name': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan Nama Ruas Jalan'
+                    }
+                }
+            },
+            'add-road-district': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon pilih kecamatan'
+                    },
+                }
+            },
+            'add-road-length': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan panjang ruas jalan'
+                    },
+                }
+            },
+            'add-road-width': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan lebar ruas jalan'
+                    },
+                }
+            },
+            'add-road-good': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan panjang kondisi baik ruas jalan'
+                    },
+                }
+            },
+            'add-road-medium': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan panjang kondisi sedang ruas jalan'
+                    },
+                }
+            },
+            'add-road-slight': {
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan panjang kondisi rusak ringan ruas jalan'
+                    },
+                }
+            },
+            'add-road-severely':{
+                validators: {
+                    notEmpty: {
+                        message: 'Mohon masukan panjang kondisi rusak berat ruas jalan'
+                    },
+                }
+            }
+        },
+        plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+                // Use this for enabling/changing valid/invalid class
+                // eleInvalidClass: '',
+                eleValidClass: '',
+                rowSelector: function(field, ele) {
+                    // field is the field name & ele is the field element
+                    return '.mb-3';
+                }
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            // Submit the form when all fields are valid
+            defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+            autoFocus: new FormValidation.plugins.AutoFocus(),
+        },
+        init: instance => {
+            instance.on('plugins.message.placed', function(e) {
+                //* Move the error message out of the `input-group` element
+                if (e.element.parentElement.classList.contains('input-group')) {
+                    // `e.field`: The field name
+                    // `e.messageElement`: The message element
+                    // `e.element`: The field element
+                    e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+                }
+                //* Move the error message out of the `row` element for custom-options
+                if (e.element.parentElement.parentElement.classList.contains(
+                    'custom-option')) {
+                    e.element.closest('.row').insertAdjacentElement('afterend',
+                        e.messageElement);
+                }
+            });
+        }
+    });
+
 </script>
 @endsection

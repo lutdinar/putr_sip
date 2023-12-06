@@ -25,4 +25,25 @@ class Consultant extends Model
     {
         return Consultant::save();
     }
+
+    public function get_all_where_limit($search, $page)
+    {
+        if (!empty($search)) {
+            $consultants    = Consultant::where("name", "like", "%$search%")
+                ->whereNull('deleted_at')
+                ->limit(20)->offset(($page - 1) * 20)
+                ->orderBy('name', 'asc')->get();
+
+            $totalRows      = Consultant::where("name", "like", "%$search%")
+                ->whereNull('deleted_at')->count();
+        } else {
+            $consultants    = Consultant::whereNull('deleted_at')
+                ->orderBy('name', 'asc')
+                ->limit(20)->offset(($page - 1) * 20)
+                ->get();
+            $totalRows      = Consultant::whereNull('deleted_at')->count();
+        }
+
+        return array('consultants' => $consultants, 'totalRows' => $totalRows);
+    }
 }

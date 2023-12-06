@@ -9,7 +9,7 @@
                     <div class="content-left">
                         <span>Total</span>
                         <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2">21,459</h4>
+                            <h4 class="mb-0 me-2">{{ $total }}</h4>
                         </div>
                         <span>Penyedia Jasa</span>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="content-left">
                         <span>Memiliki Akun</span>
                         <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2">19,860</h4>
+                            <h4 class="mb-0 me-2">{{ $total_users }}</h4>
                         </div>
                         <span>Penyedia Jasa</span>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="content-left">
                         <span>Belum memiliki akun</span>
                         <div class="d-flex align-items-center my-1">
-                            <h4 class="mb-0 me-2">237</h4>
+                            <h4 class="mb-0 me-2">{{ $total_not_users }}</h4>
                         </div>
                         <span>Penyedia Jasa</span>
                     </div>
@@ -126,10 +126,10 @@
                 <div class="col-xl-4 col-md-6 col-sm-12">
                     <div class="card p-2 h-100 shadow-none border">
                         <div class="rounded-2 text-center mb-3">
-                            <a href="{{ url('consultants/detail?refer=') . $consultant->refer }}">
+                            <a href="{{ (Session()->has('x-user-log')) ? url('consultants/detail?refer=') . $consultant->refer : 'javascript:void(0);' }}">
                                 <img
-                                    class="img-fluid" src="{{ asset('assets/img/pages/app-academy-tutor-5.png') }}"
-                                    alt="{{ $consultant->name }}" /></a>
+                                    class="img-fluid" src="{{ asset('assets/img/LOGO.jpg') }}"
+                                    alt="{{ $consultant->name }}" style="height: 100px !important;"/></a>
                         </div>
                         <div class="card-body p-3 pt-2">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -155,8 +155,11 @@
                                 <!--									><span class="text-muted"> (34)</span>-->
                                 <!--								</h6>-->
                             </div>
-                            <a class="h5"
-                               href="{{ url('consultants/detail?refer=') . $consultant->refer }}">{{ $consultant->name }}</a>
+                            @if(Session()->has('x-user-log'))
+                                <a class="h5" href="{{ url('consultants/detail?refer=') . $consultant->refer }}">{{ $consultant->name }}</a>
+                            @else
+                                <a class="h5" href="javascript:void(0);">{{ $consultant->name }}</a>
+                            @endif
                             <p class="mt-2">
                                 {{ $consultant->email }}
                             </p>
@@ -167,11 +170,14 @@
                                 <div class="progress-bar w-100" role="progressbar" aria-valuenow="25" aria-valuemin="0"
                                      aria-valuemax="100"></div>
                             </div>
+
+                            @if(Session()->has('x-user-log'))
                             <a class="w-100 btn btn-label-primary align-items-center"
                                href="{{ url('consultants/detail?refer=') . $consultant->refer }}">
                                 <span class="me-2">Detail</span>
                                 <i class="ti ti-chevron-right scaleX-n1-rtl ti-sm"></i>
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>

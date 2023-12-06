@@ -1,12 +1,15 @@
 @extends('templates.main')
 @section('title', 'Detail Penyedia Jasa')
 @section('content')
+    @csrf
 <div
     class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-4 text-center text-sm-start gap-2">
     <div class="mb-2 mb-sm-0">
         <h4 class="mb-1">Detail Penyedia Jasa</h4>
     </div>
+    @if(Session()->get('x-user-role') != 'consultant')
     <a href="{{ url('consultants') }}" class="btn btn-label-primary">Kembali</a>
+    @endif
 </div>
 
 @if (session('status'))
@@ -40,7 +43,7 @@
             <div class="card-body">
                 <div class="user-avatar-section">
                     <div class="d-flex align-items-center flex-column">
-                        <img class="img-fluid rounded mb-3 pt-1 mt-4" src="{{ asset('assets/img/avatars/15.png') }}"
+                        <img class="img-fluid rounded mb-3 pt-1 mt-4" src="{{ asset('assets/img/LOGO.jpg') }}"
                              height="100" width="100" alt="User avatar" />
                         <div class="user-info text-center">
                             <h4 class="mb-2">{{ $consultant->name }}</h4>
@@ -117,7 +120,7 @@
                     <div class="mt-3 d-flex justify-content-center">
                         <a href="javascript:void(0);" class="btn btn-sm btn-primary me-3" data-bs-target="#editUser"
                            data-bs-toggle="modal">Ubah</a>
-                        <button type="button" class="btn btn-sm btn-danger me-3">Hapus</button>
+                        <button type="button" class="btn btn-sm btn-danger btn-delete-consultant me-3" id="{{ $consultant->id }}">Hapus</button>
                         @switch(!empty($consultant->account) && isset($consultant->account->state))
                             @case("active")
                                 <a href="javascript:void(0);" class="btn btn-sm btn-label-warning suspend-user me-3">Matikan Akun</a>
@@ -1123,7 +1126,7 @@
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
 <!-- Page JS -->
-<script src="{{ asset('assets/js/customize/consultant-detail.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/customize/consultant-detail.js') }}"></script>
 <script>
     $("#verifications-panel-id-card").hide();
     $("#rejects-panel-id-card").hide();
@@ -1203,7 +1206,63 @@
         });
     }
 
+    $(".btn-delete-consultant").click(function () {
+        let consultant      = this.id;
 
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Jika anda pilih hapus, data tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Batalkan',
+            confirmButtonText: 'Ya, hapus sekarang!',
+            customClass: {
+                confirmButton: 'btn btn-primary me-3',
+                cancelButton: 'btn btn-label-danger'
+            },
+            buttonsStyling: false
+        }).then(function (result) {
+            if (result.value) {
+                $.post("/consultants/delete",
+                    {
+                        "_token": "{{ csrf_token() }}",
+                        "consultant": consultant
+                    }, function (data, status) {
+                        if (data.status == "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: data.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                            }).then(function (){
+                                window.location.href = '/consultants';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'danger',
+                                title: 'Kesalahan',
+                                text: data.message,
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                            });
+                        }
+                    });
+
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                    title: 'Pembatalan',
+                    text: 'Anda membatalkan penghapusan data :)',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });
+            }
+        });
+    })
 
 
 </script>

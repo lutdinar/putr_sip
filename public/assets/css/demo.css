@@ -106,9 +106,29 @@
     }
 
     #yearScroll {
-        width: 20%;
+        max-width: 300px;
     }
 }
+
+/*@media (max-width: 220px) {*/
+/*    #yearScroll {*/
+/*        width: 200px;*/
+/*    }*/
+/*}*/
+
+/*@media (min-width: 300px) {*/
+/*    #yearScroll {*/
+/*        max-width: 250px;*/
+
+/*    }*/
+/*}*/
+
+/*@media (min-width: 576px) {*/
+/*    #yearScroll {*/
+/*        max-width: 300px;*/
+
+/*    }*/
+/*}*/
 
 /*
 * Layout demo

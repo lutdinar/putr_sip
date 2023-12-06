@@ -29,15 +29,20 @@ class ConsultantController extends Controller
     {
         $params             = $request->query('search');
         if (isset($params)) {
-            $consultants        = Consultant::where('name', 'like', '%'. $params .'%')->paginate(6);
+            $consultants        = Consultant::where('name', 'like', '%'. $params .'%')->whereNull('deleted_at')->paginate(6);
         } else {
-            $consultants        = Consultant::paginate(6);
+            $consultants        = Consultant::where(['deleted_at' => null])->paginate(6);
         }
 
-//        echo json_encode($consultants); die();
+        $total_users            = Consultant::whereNotNull('account')->whereNull('deleted_at')->count();
+        $total_not_users        = Consultant::whereNull('account')->whereNull('deleted_at')->count();
+
         return view('consultant.index', [
-            'consultants'   => $consultants,
-            'params'        => (isset($params)) ? $params : ''
+            'consultants'       => $consultants,
+            'params'            => (isset($params)) ? $params : '',
+            'total'             => Consultant::whereNull('deleted_at')->count(),
+            'total_users'       => $total_users,
+            'total_not_users'   => $total_not_users
         ]);
     }
 
@@ -97,6 +102,40 @@ class ConsultantController extends Controller
             'status'    => $status,
             'message'   => $message
         ]);
+    }
+
+    public function delete(Request $request)
+    {
+        $consultant     = $request->input('consultant');
+        if (empty($consultant)) {
+            return response()->json(['status' => 'failed', 'message' => 'Penyedia Jasa belum diatur!']);
+        } else {
+            $data       = Consultant::findOrFail($consultant);
+
+            if (!empty($data)) {
+                if (!empty($data->account)) {
+                    $user           = User::find($data->account);
+                    $user->state        = 'inactive';
+                    $user->deleted_at   = now();
+                    $user->save();
+                }
+
+                $data->deleted_at   = now();
+                $delete             = $data->save();
+
+                if ($delete) {
+                    $status         = 'success';
+                    $message        = 'Penyedia Jasa berhasil dihapus';
+                } else {
+                    $status         = 'failed';
+                    $message        = 'Penyedia Jasa gagal dihapus! Silahkan coba lagi';
+                }
+
+                return response()->json(['status' => $status, 'message' => $message]);
+            } else {
+                return response()->json(['status' => 'failed', 'message' => 'Penyedia Jasa tidak ditemukan! Silahkan coba lagi']);
+            }
+        }
     }
 
     public function deed_store(Request $request)
@@ -165,6 +204,7 @@ class ConsultantController extends Controller
         return response()->json($data);
     }
 
+    // NOT COMPLITED
     public function owner_store(Request $request)
     {
         if ($request->input('addNewOwner') !== null) {
@@ -470,6 +510,27 @@ class ConsultantController extends Controller
         return redirect('consultants/detail?refer=' . $consultant->refer)->with([
             'status'    => $status,
             'message'   => $message
+        ]);
+    }
+
+    public function get_consultant_json(Request $request)
+    {
+        $search         = $request->query('search');
+        $page           = $request->query('page');
+
+        $consultants    = new Consultant();
+        $data           = $consultants->get_all_where_limit($search, $page);
+
+        if (!empty($data['consultants'])) {
+            foreach ($data['consultants'] as $consultant) {
+                $consultant->text   = $consultant->name;
+            }
+        }
+
+        return response()->json([
+            'totalRows'     => $data['totalRows'],
+            'results'       => $data['consultants'],
+            'pagination'    => ['more' => true]
         ]);
     }
 }

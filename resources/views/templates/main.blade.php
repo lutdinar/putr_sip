@@ -340,7 +340,7 @@
                     <div class="container-xxl d-flex h-100">
                         <ul class="menu-inner">
                             <!-- MENU-->
-                            @if(session()->has('x-user-log'))
+                            @if (session()->has('x-user-log'))
                                 @switch(session()->get('x-user-role'))
                                     @case('administrator')
                                         @include('templates/menus/admin')
@@ -352,6 +352,8 @@
                                         @include('templates/menus/consultant')
                                         @break
                                 @endswitch
+                            @else
+                                @include('templates/menus/public')
                             @endif
                             <!-- END MENU -->
                         </ul>
