@@ -261,62 +261,72 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
-                               data-bs-toggle="dropdown">
-                                <div class="avatar avatar-online">
-                                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt
-                                         class="h-auto rounded-circle"/>
-                                </div>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="pages-account-settings-account.html">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0 me-3">
-                                                <div class="avatar avatar-online">
-                                                    <img src="{{ asset('assets/img/avatars/1.png') }}" alt
-                                                         class="h-auto rounded-circle"/>
+
+                        @if(Session::has('x-user-log'))
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
+                                   data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt
+                                             class="h-auto rounded-circle"/>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt
+                                                             class="h-auto rounded-circle"/>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="flex-grow-1">
+                                                <div class="flex-grow-1">
                                                     <span
                                                         class="text-uppercase fw-semibold d-block">{{ session()->get('x-user-name') }}</span>
-                                                <small class="text-muted">{{ session()->get('x-user-role') }}</small>
+                                                    <small class="text-muted">{{ session()->get('x-user-role') }}</small>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <div class="dropdown-divider"></div>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item"
-                                       href="#">
-                                        <i class="ti ti-user-check me-2 ti-sm"></i>
-                                        <span class="align-middle">My Profile</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <div class="dropdown-divider"></div>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="ti ti-lifebuoy me-2 ti-sm"></i>
-                                        <span class="align-middle">Help</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <div class="dropdown-divider"></div>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ url('/authentications/signout') }}">
-                                        <i class="ti ti-logout me-2 ti-sm"></i>
-                                        <span class="align-middle">Log Out</span>
-                                    </a>
-                                </li>
-                            </ul>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#">
+                                            <i class="ti ti-user-check me-2 ti-sm"></i>
+                                            <span class="align-middle">My Profile</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="ti ti-lifebuoy me-2 ti-sm"></i>
+                                            <span class="align-middle">Help</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ url('/authentications/signout') }}">
+                                            <i class="ti ti-logout me-2 ti-sm"></i>
+                                            <span class="align-middle">Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @else
+                        <li class="nav-item me-2 me-xl-0">
+                            <a href="{{ url('authentications') }}" class="btn btn-primary" title="Login">
+                                <i class="ti ti-login ti-sm"></i> Login
+                            </a>
                         </li>
+                        @endif
+
                     </ul>
                 </div>
 

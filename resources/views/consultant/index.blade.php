@@ -113,12 +113,14 @@
                 <h5 class="mb-1">Daftar Penyedia Jasa</h5>
                 <p class="text-muted mb-0">Total 100 penyedia jasa</p>
             </div>
-            <div class="d-flex justify-content-md-end align-items-center gap-4 flex-wrap">
-                <button class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal"
-                        data-bs-target="#addNewConsultant">
-                    <i class="ti ti-plus me-2"></i> Tambah Penyedia Jasa
-                </button>
-            </div>
+            @if(Session::has('x-user-log') && Session::get('x-user-role') == 'administrator')
+                <div class="d-flex justify-content-md-end align-items-center gap-4 flex-wrap">
+                    <button class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal"
+                            data-bs-target="#addNewConsultant">
+                        <i class="ti ti-plus me-2"></i> Tambah Penyedia Jasa
+                    </button>
+                </div>
+            @endif
         </div>
         <div class="card-body">
             <div class="row gy-4 mb-4">
